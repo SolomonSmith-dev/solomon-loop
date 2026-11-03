@@ -1,0 +1,5 @@
+.claude/
+.playwright-mcp/
+.DS_Store
+node_modules/
+.solomon-loop/

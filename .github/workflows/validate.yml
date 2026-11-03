@@ -1,0 +1,36 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  plugin:
+    name: Plugin manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Install per https://code.claude.com/docs/en/setup.md (fetched 2026-11-03).
+      # Installing needs no credentials; only sessions do. `plugin validate` runs offline.
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Validate plugin
+        run: claude plugin validate . --strict
+
+  links:
+    name: README links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check README links
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: --no-progress README.md
+          fail: true

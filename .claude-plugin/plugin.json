@@ -1,0 +1,23 @@
+{
+  "name": "solomon-loop",
+  "version": "1.0.0",
+  "description": "A loop that makes Claude Code subagents write risk before code, cite fetched sources, verify with commands, survive a reviewer challenge, and only promote lessons that recur.",
+  "author": {
+    "name": "Solomon Smith",
+    "url": "https://solomonsmith.dev"
+  },
+  "homepage": "https://github.com/SolomonSmith-dev/solomon-loop",
+  "repository": "https://github.com/SolomonSmith-dev/solomon-loop",
+  "license": "MIT",
+  "keywords": [
+    "subagents",
+    "code-review",
+    "security",
+    "tdd",
+    "workflow",
+    "claude-code"
+  ],
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/SolomonSmith-dev/solomon-loop#readme",
+  "supportUrl": "https://github.com/SolomonSmith-dev/solomon-loop/issues"
+}
