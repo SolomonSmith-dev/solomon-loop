@@ -29,3 +29,21 @@ created .solomon-loop/sample/
 Finding: the lessons header block at the end of `loop-lens.template.md` was copied into `loop-lens.md`. Fixed by moving it to `lessons.template.md`.
 
 GitHub-sourced proof: pending the public push (Task 9).
+
+## GitHub-sourced proof (after the public push, 2026-11-03)
+
+Clean HOME (empty temp dir):
+
+```
+$ claude plugin marketplace add SolomonSmith-dev/solomon-loop
+✔ Successfully added marketplace: solomon-loop (declared in user settings)
+$ claude plugin install solomon-loop@solomon-loop --scope user
+✔ Successfully installed plugin: solomon-loop@solomon-loop (scope: user)
+$ claude plugin list
+  ❯ solomon-loop@solomon-loop
+    Version: 1.0.0
+    Scope: user
+    Status: ✔ enabled
+```
+
+`SKILL.md` present at `.claude/plugins/cache/solomon-loop/solomon-loop/1.0.0/skills/solomon-loop/SKILL.md`. CI run 41618042811 (validate) passed on the first push.
