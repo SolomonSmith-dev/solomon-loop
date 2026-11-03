@@ -128,7 +128,7 @@ When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work
 
 [`examples/todo-api/`](examples/todo-api/) holds one unedited run on a small todo API. The reviewer's Challenge pass produced one BROKE. The files are what the run wrote, with nothing cleaned up afterwards.
 
-Read the reviewer report first, for the attempt table. Then the worker report, for the Risk section written before the code. Then `lessons.md`, to see how the BROKE became a candidate.
+Read `reviewer-report-task-3.md` first, for the attempt table and the one BROKE. Then the worker report, for the Risk section written before the code. Then `lessons.md`, to see how the BROKE became a candidate.
 
 ## How lessons get promoted
 

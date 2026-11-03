@@ -1,0 +1,4 @@
+# Loop lessons (candidates until the user approves)
+| # | Task group | Finding class | Root cause | Proposed improvement | Recurrences | Status |
+|---|---|---|---|---|---|---|
+| 1 | Task 3 | built-in-throws-on-path-input | Surfaces list named JSON bodies only; path-derived input was not on the worker's checklist, so `decodeURIComponent` on a URL segment was added without its throw case | Add a Surfaces line: "Path and query input: every built-in called on a URL segment (decodeURIComponent, new URL, Number, regex) must be probed with invalid percent-encoding (`%E0`), `%2F`, `%00` and a 10,000-char value; expected 404 or 400, never 500". Add to Verification: "list every built-in that can throw on caller-supplied input and show the probe that maps it to 4xx" | 1 | rejected: one occurrence (Task 3 only; Tasks 1, 2 and the branch review did not report the class) |
