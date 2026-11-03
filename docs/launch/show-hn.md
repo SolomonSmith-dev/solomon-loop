@@ -18,7 +18,7 @@ SolomonLoop is the fix I have run since. Nine steps: define, research, assess ri
 
 It started as an addition to obra/superpowers and defers to that dispatcher when loaded. Standalone it ships setup and run commands. MIT, no telemetry.
 
-Write-up with the reasoning per step: [blog post URL]
+Write-up with the reasoning per step: https://solomonsmith.dev/blog/solomon-loop/
 
 What I want: your reviewer's BROKE lines as issues. Finding classes from codebases I have not seen are what the loop needs.
 

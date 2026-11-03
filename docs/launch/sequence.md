@@ -9,7 +9,7 @@ Nothing in this table posts without Solomon's yes on the specific draft. "Agent"
 | Tue 11-04 | Install proof in a clean session: both install commands, then setup on the sample plan | Agent runs, Solomon watches | `claude plugin list` prints `solomon-loop` and `test -f .solomon-loop/sample/loop-lens.md` exits 0. Fails: plugin absent or file missing. |
 | Wed 11-05 | Tag and release v1.0.0 with CHANGELOG section | Solomon (release button) | `gh release view v1.0.0 -R SolomonSmith-dev/solomon-loop` prints the tag. Fails: `release not found`. |
 | Thu 11-06 | README read-through against banned patterns | Agent | The my-voice banned-pattern grep (same command used on `docs/launch/`) run on `README.md` prints nothing and exits 1. Fails: any line printed. |
-| Mon 11-10 | Blog post live on solomonsmith.dev; fill the date placeholder | Solomon (publish) | `curl -s https://solomonsmith.dev/<slug> \| grep -c "SolomonLoop"` prints 1 or more. Fails: 0. |
+| Mon 11-10 | Blog post live on solomonsmith.dev (blog approved 2026-11-03, on site branch `post/solomon-loop` at `/blog/solomon-loop/`, push pending) | Solomon (push yes) | `curl -s https://solomonsmith.dev/<slug> \| grep -c "SolomonLoop"` prints 1 or more. Fails: 0. |
 | Tue 11-11 | Replace `[blog post URL]` in show-hn.md, linkedin link stays repo | Agent | `grep -c "\[blog post URL\]" docs/launch/show-hn.md` prints 0. Fails: 1. |
 | Wed 11-12 | Submit to the claude.ai plugin directory | Solomon (form) | Confirmation email or submission id saved in `docs/launch/directory-submission.md`. Fails: file absent. |
 | Thu 11-13 | LinkedIn post | Solomon | Post URL pasted into `docs/launch/posted.md`. Fails: no URL. |
