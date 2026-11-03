@@ -27,7 +27,7 @@ Never write into any other directory. Do not touch tracked files.
 
 Read the template at `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/loop-lens.template.md` and fill every placeholder from the plan and spec. The four lists:
 
-1. **Review Focus**: the plan's named failure modes (a "Review Focus", "Risks", "Failure modes" or "Fails when" section). If the plan names none, derive 3 to 6 from the spec and the task list, and record that in the ledger (step 5) as `Ruling: Review Focus derived, plan named none`.
+1. **Review Focus**: the plan's named failure modes (a "Review Focus", "Risks", "Failure modes" or "Fails when" section). If the plan names none, derive 3 to 6 from the spec and the task list, and record that in the ledger (step 5) as `Ruling (YYYY-MM-DD, Task 0): Review Focus derived | plan named none | reviewers may attack the wrong things`.
 2. **Security/privacy surfaces**: auth, ownership checks, crypto, secrets or personal data in logs, data leaving the device, plus anything the plan or spec names (tenancy, file permissions, network calls, shelling out).
 3. **Verify commands**: focused tests, full suite, typecheck, dependency audit, lint, any repo check script. One line per command in the form `` `<command>` (from Task N) `` where N is the first task after which the command exists. Take commands from the plan's "Done check" lines and the repo's package or build files.
 4. **Mock boundaries**: the external services where a mock is allowed (third-party APIs, paid services, email, payment). Everything else is real integration. If the plan touches no external service, write `None: all integration is real`.
@@ -43,7 +43,7 @@ Copy `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/lessons.template.md` as-is, minu
 Create it if absent with a title line `# Solomon Loop ledger: <slug>` and this standing ruling, dated today:
 
 ```
-Ruling (YYYY-MM-DD): the task reviewer's Challenge pass may create ONE throwaway test file in the relevant package's test folder, run only that file, then delete it. `git status --porcelain` must show nothing new afterwards and the reviewer's report must say so. This is the reviewer's only permitted write.
+Ruling (YYYY-MM-DD, Task 0): the task reviewer's Challenge pass may create ONE throwaway test file in the relevant package's test folder, run only that file, then delete it; `git status --porcelain` must show nothing new afterwards and the reviewer's report must say so | a reviewer that cannot run an attack only re-reads the diff | a stray test file lands in the diff
 ```
 
 Append any `Ruling:` line from step 3. If `ledger.md` already exists, append only rulings that are not already present.

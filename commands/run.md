@@ -43,14 +43,14 @@ Dispatch a second `Agent` with: the task text and acceptance checks, the diff (`
 Any Critical or Important finding starts a fix round. Up to 5 rounds per task:
 
 - Rounds 1 to 3: resume the same implementer Agent (SendMessage with its id) with the findings verbatim.
-- Rounds 4 and 5: dispatch a fresh implementer Agent with the brief plus all findings so far.
+- Rounds 4 and 5: dispatch a fresh implementer Agent on a more capable model (pass `model` to the Agent tool) with the brief plus all findings so far.
 - After each round, re-dispatch the reviewer with the new diff and report (the challenge block scoped to the fix).
 - Round 5 still failing: stop and ask the user (hopeless-plan stop). Do not check the task off.
 
 ### 1e. Learn and record
 
 - Copy every Lessons line from the reviewer into `lessons.md` as a new row: `#`, task group (the task number or the plan's grouping), finding class, root cause, proposed improvement, `Recurrences` 1, `Status` candidate. If the same finding class already has a row, bump its `Recurrences` and add the task group instead of adding a row.
-- Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <decision and reason>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
+- Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
 - Check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
 
 ## 2. Stops

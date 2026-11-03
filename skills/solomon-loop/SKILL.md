@@ -21,7 +21,7 @@ Roles: the **controller** is the session running the plan. It dispatches one **i
 
 ## Setup (once per plan)
 
-Workspace: `.solomon-loop/<plan-slug>/` in the repo root, where the slug is the plan's filename without date and extension. Add it to `.gitignore` unless the user wants it tracked.
+Workspace: `.solomon-loop/<plan-slug>/` in the repo root, where the slug is the plan's filename without the `.md` extension. Add it to `.gitignore` unless the user wants it tracked.
 
 1. Write `loop-lens.md` from [loop-lens.template.md](loop-lens.template.md), filled from the plan and spec. Four short lists:
    - **Review Focus:** the plan's named failure modes (its Review Focus or risk section). None named: derive 3 to 6 from the spec and ledger a Ruling.
@@ -29,7 +29,7 @@ Workspace: `.solomon-loop/<plan-slug>/` in the repo root, where the slug is the 
    - **Verify commands:** focused tests, full suite, typecheck, dependency audit, any repo check script, with the task number from which each exists.
    - **Mock boundaries:** the external services where a mock is allowed. Everything else uses real integration (real DB, real app, real primitives, real browser).
 2. Create `lessons.md` from [lessons.template.md](lessons.template.md).
-3. Create `ledger.md` with the plan path, date and one line per setup decision. Every later decision is a line `Ruling: <what> | <why> | <cost if wrong>`.
+3. Create `ledger.md` with the plan path, date and one line per setup decision. Every later decision is a line `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>` (setup rulings use `Task 0`).
 4. If the repo has a shared brief file (for example `AGENTS.md`), add a short "Solomon Loop" section pointing at `loop-lens.md` and the worker sections. Edit a workspace copy, not a tracked file, unless the user says otherwise.
 
 ## Delivery loop (every task)
