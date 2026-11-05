@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Documentation of the GitHub-sourced plugin install in a clean HOME, including enabled-plugin output, the installed skill path, and the first-push CI result.
-- Review tiers: each task is **full** or **light**, derived from new `Paths:` globs on every loop-lens Review Focus item and surface, matched against the task's files and its actual diff, plus dependency manifests, lockfiles, migrations, CI and auth/env config. Light tier skips the Challenge. A plan may raise a tier, never lower it.
+- Review tiers: each task is **full** or **light**, derived from new `Paths:` globs on every loop-lens Review Focus item and surface, matched against the task's files and its actual diff, plus dependency manifests, lockfiles, migrations, CI and auth/env config. Light tier skips the Challenge. A plan may raise a tier, never lower it. A legacy 1.0.0 lens without `Paths:` makes every task full tier.
 - Glossary rows for independent reviewer, owner, correction attempt and review tier.
 
 ### Changed

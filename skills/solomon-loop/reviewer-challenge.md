@@ -1,6 +1,6 @@
 # Reviewer additions (Solomon Loop)
 
-Append this block to the reviewer's brief (standalone) or to SDD's task-reviewer prompt after Part 2 (with superpowers), and to the re-review prompt for the fix it covers. Standalone, Parts 1 and 2 are spec compliance and code quality; Part 3 starts here. Fill `[PLACEHOLDER]` values from the workspace `loop-lens.md`. For a **light**-tier task, drop Part 3 and send Parts 1, 2 and 4 only.
+Append this block to the reviewer's brief (standalone) or to SDD's task-reviewer prompt after Part 2 (with superpowers), and to the re-review prompt for the fix it covers. Standalone, Parts 1 and 2 are spec compliance and code quality; Part 3 starts here. Fill `[PLACEHOLDER]` values from the workspace `loop-lens.md`. For a **light**-tier task, drop Part 3 and send Parts 1, 2, 4 and the Writes section only.
 
 ```
 ## Part 3: Challenge
@@ -12,7 +12,7 @@ For each risk the implementer's **Risk** section names, and any of these the dif
   Surfaces: [SECURITY_SURFACES]
 try ONE concrete break: an attack, an edge input, another tenant's id, an unauthorized caller, a tampered payload, a missing or out-of-range value.
 
-You may create ONE throwaway test file in the relevant package's test folder, run only that file, then delete it. `git status --porcelain` must show nothing new afterwards; say so in the report. This is the only write you may make.
+You may create ONE throwaway test file in the relevant package's test folder, run only that file, then delete it. `git status --porcelain` must show nothing new outside the workspace afterwards; say so in the report. Besides your report file, this is the only write you may make.
 
 Report each attempt as: target | attack | result (HELD, or BROKE with file:line). A BROKE is Critical or Important.
 
@@ -33,6 +33,12 @@ finding-class (short kebab-case) | why the worker likely missed it (brief gap, m
 Compliance Minors also get one line, class prefixed `report-` (for example `report-missing-sources`), so recurrence tracking still sees them.
 
 No Critical or Important findings and no compliance Minors: write "Lessons: none".
+
+## Writes (every tier)
+
+Your report file at [REPORT_PATH] is always allowed. On full tier, the one throwaway test file from Part 3 is also allowed. Nothing else: no source, test, config or workspace edits. `git status --porcelain` must show nothing new outside the workspace when you finish.
+
+In the report, keep Part 4 Lessons and a list of unfixed Minors as their own headed sections; the controller reads only those, plus Critical and Important findings when corrections are needed.
 
 Write the full report to [REPORT_PATH]. Your final message back is at most 10 lines and nothing else:
 VERDICT: accept | corrections-needed
