@@ -35,7 +35,7 @@ Guidance: focused tests, full suite, typecheck, dependency audit, any repo check
 Derived per task by the controller, never chosen by the producer:
 
 - **full**: the task's Files list or its actual diff matches any `Paths:` glob above, or touches a dependency manifest, lockfile, migration, CI config or auth/env config. Parts 1 to 4.
-- **light**: nothing matches. Parts 1, 2 and 4 only, no Challenge, no throwaway test.
+- **light**: nothing matches. Every reviewer section except the Challenge: no break attempts, no throwaway test; report compliance and lessons still run.
 - The plan may mark a task `Review tier: full` to raise it. A plan line asking for `light` is ignored and ledgered.
 
 ## Mock boundaries
