@@ -17,7 +17,7 @@
 | rejected | Lesson status when the controller decides the proposed improvement is wrong or would not have prevented the finding. |
 | declined | Lesson status when the improvement is sound but the owner chooses not to adopt it, with the reason recorded. |
 | adopted | Lesson status once the improvement has been written into the loop's rules or templates. |
-| ruling | The controller's one-line decision on a reviewer finding (accept, fix, or override with reason), recorded in the ledger. |
+| ruling | An evidence-backed operational decision recorded in the ledger. Producers may request correction or challenge a finding with evidence; Review Office owns independent acceptance and cannot be overridden by a ruling. |
 | ledger | The per-plan `ledger.md` that records each dispatch, challenge outcome, ruling and lesson line in order. |
 | promote | Moving a supported lesson into the loop's rules or templates. Requires the same finding class in at least two task groups. |
 | task group | A set of plan tasks that touch the same component or concern. Recurrence is counted across task groups, not within one. |

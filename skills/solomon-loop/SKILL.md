@@ -17,7 +17,7 @@ Three loops:
 
 The user sets direction and makes product decisions. Agents research, implement, verify, review failures and test improvements. **Any change to the shared process needs the user's yes before adoption.** Passing tests alone does not prove the workflow is improving.
 
-Roles: the **controller** is the session running the plan. It dispatches one **implementer** Agent per task and one **reviewer** Agent per task, and keeps the ledger. Shortcut: `/solomon-loop:setup <plan>` does the setup below and `/solomon-loop:run <plan>` runs the delivery loop.
+Roles: the **controller** is the session running the plan. It dispatches one **implementer** Agent per task and keeps the production ledger. **Review Office** independently selects and dispatches the reviewer and owns exact-revision acceptance; production cannot self-accept or overrule findings. Shortcut: `/solomon-loop:setup <plan>` does the setup below and `/solomon-loop:run <plan>` runs the delivery loop.
 
 ## Setup (once per plan)
 
@@ -47,17 +47,17 @@ Workspace: `.solomon-loop/<plan-slug>/` in the repo root, where the slug is the 
 Per unchecked task, the controller:
 
 1. Dispatches one implementer Agent. The brief holds the task text, the acceptance checks, and [worker-report.md](worker-report.md) appended with its placeholders filled from `loop-lens.md`. The implementer commits its work and writes its report with the loop sections first.
-2. Dispatches one reviewer Agent with the diff, the implementer's report, and [reviewer-challenge.md](reviewer-challenge.md) appended. The Challenge pass allows exactly one throwaway test file, deleted before the report; `git status --porcelain` must be clean afterwards. Ledger this as a standing Ruling at setup.
-3. On findings: fix rounds up to 5. Rounds 1 to 3 resume the same implementer; rounds 4 and 5 use a fresh implementer on a more capable model. Each fix gets a scoped re-review with the Challenge block limited to the fixed findings. At round 5, adjudicate each open finding, ledger a Ruling, and move on.
-4. Copies lesson lines into `lessons.md`, appends the completion to `ledger.md`, checks the task off in the plan.
+2. Sends the task evidence to Review Office, which independently dispatches one reviewer Agent with the diff, the implementer's report, and [reviewer-challenge.md](reviewer-challenge.md) appended. The Challenge pass allows exactly one throwaway test file, deleted before the report; `git status --porcelain` must be clean afterwards. Ledger this as a standing Ruling at setup.
+3. On real findings, allow at most TWO correction attempts TOTAL per work-order lineage after initial production. Persist `correction_count` and lineage in the ledger and reports across restarts, model/producer changes, reassignment and successor orders addressing the same failure. Review Office assigns each scoped re-review. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon; do not mark failed work complete or reset the count.
+4. Copies candidate lessons into `lessons.md`; records completion only after exact-revision Review Office acceptance and the actual done check. Review acceptance grants no execution/disclosure/spending/release authority.
 
-After the last task: one whole-branch reviewer with the Challenge section only, scoped to cross-task risks. One fix dispatch, one re-review, then Promote.
+After the last task: Review Office assigns whole-branch Challenge scoped to cross-task risks. Any correction consumes the affected task lineage's remaining two-attempt allowance; final review grants no extra fix round. Promote only accepted results.
 
 ## Learning loop (inside the run)
 
 - **Validate:** a lesson is a CANDIDATE. Its test is the finding-class count in later task reviews; baseline is the task groups before it. Bump `Recurrences` when a later review reports the same class.
 - **Supported** = the class recurs in 2 or more task groups and a concrete proposed change exists. One-offs and ties are rejected; mark them `rejected` with the reason.
-- **No mid-run process changes** without the user's yes, except a fix that unblocks a broken task, ledgered as a Ruling.
+- **Standing process, role and authority changes require user approval**, including changes proposed to unblock a broken task. A ledger Ruling cannot waive that requirement. Ordinary implementation fixes within the already approved task remain allowed; they do not authorize process adoption. Already approved policy changes require integration and verification, not repeated approval.
 
 ## Promote (end of run)
 
@@ -71,18 +71,18 @@ Not run inside a delivery run. It needs fixed eval tasks and isolated A/B copies
 
 ## Stops
 
-Four things stop a run: an irreversible or destructive operation; a security-sensitive action; a side effect outside the worktree (merge, push to a shared branch, publish); a plan so broken that every path forward is a guess. The loop adds one: adopting any process change. Everything else is a Ruling in the ledger, and the run keeps going.
+Check existing task authority before destructive, security-sensitive or outward actions; obtain only missing authority, never repeat an already granted approval. A task that cannot pass its check or exhausts two corrections escalates through Ilúvatar to Solomon. Adopting a standing process change requires user authority. Critical authority/privacy/spending/recovery failure halts affected work; other in-scope decisions are ledger rulings, never overrides of independent acceptance.
 
 ## With superpowers
 
 When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work and this skill only adds to it:
 
-- SDD's dispatcher and prompts (`implementer-prompt.md`, `task-reviewer-prompt.md`, `re-review-prompt.md`, final code reviewer) run every dispatch. Do not build separate briefs; `/solomon-loop:run` defers to SDD.
+- SDD's prompt/report mechanics may run dispatch, but Review Office owns independent reviewer assignment and acceptance; this approved two-total-attempt policy supersedes conflicting SDD or plugin rules. Do not silently defer the counter or acceptance authority to SDD.
 - Workspace becomes SDD's: `.superpowers/sdd/<plan>/`. `loop-lens.md`, `lessons.md` and the Rulings live there, in SDD's ledger. Do the setup above after SDD's own setup.
 - Implementer: append the [worker-report.md](worker-report.md) block to SDD's implementer prompt. Its sections go in the report file before SDD's own.
 - Task reviewer and re-reviewer: append the [reviewer-challenge.md](reviewer-challenge.md) block after SDD's Part 2.
 - Final whole-branch review: append the Challenge section only, scoped to cross-task risks.
-- Fix rounds, re-review scoping and the circuit breaker are SDD's.
+- Correction attempts and circuit breaker follow this skill: TWO TOTAL per work-order lineage, persisted across producer/model/restart/successor changes, then escalation via Ilúvatar to Solomon.
 - Stops: SDD's four plus this skill's one (adopting a process change).
 - Never edit the plugin cache. The additions live in this skill's folder and in the plan's SDD workspace.
 
@@ -94,3 +94,7 @@ When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work
 - Leaving the throwaway test file behind, or committing it.
 - Promoting a lesson that appeared once. One occurrence is a candidate, not evidence.
 - Pausing between tasks to ask "continue?". Rule, ledger, continue; stop only for the five stops.
+
+## Authority and evidence
+
+Use approved subscription capacity only; no billed API calls or paid fallback. Source/action grants, processor purpose, expiry and existing owners constrain dispatch and delivery. Critical authority/privacy/spending/recovery failure halts affected work and dependents. Preserve paused work. Prompts and static checks do not prove deterministic enforcement or runtime acceptance.

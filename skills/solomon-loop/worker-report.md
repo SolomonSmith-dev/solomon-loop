@@ -5,6 +5,8 @@ Append this block to the implementer's brief (standalone) or to SDD's implemente
 ```
 ## Solomon Loop (binding for this task)
 
+Record work-order ID/lineage, exact candidate revision and persisted correction_count (initial production is not a correction). At most TWO correction attempts TOTAL across restart/model/producer/reassignment/successor changes. Review Office independently assigns reviewers and owns acceptance; self-review is evidence only. Escalate unresolved failure via Ilúvatar to Solomon after two unsuccessful attempts. Never treat review as execution/release authority.
+
 Your report file must contain these sections, in this order, before the standard ones:
 
 - **Sources:** every doc you read for a library or external API this task touches: URL + date. Fetch current docs; do not work from memory.

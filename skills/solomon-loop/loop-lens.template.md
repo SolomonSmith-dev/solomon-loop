@@ -31,3 +31,7 @@ Guidance: focused tests, full suite, typecheck, dependency audit, any repo check
 Guidance: only the external services a test may stub (third-party HTTP APIs, paid services, email senders). Everything else is real: real DB, real app, real primitives, real browser. An empty list means no mocks.
 
 - [EXTERNAL_SERVICE_1]
+
+## Review authority and recovery
+
+Work-order lineage: [LINEAGE]. Persist correction_count (initial production excluded): [COUNT]. Review Office independently assigns reviewer and owns exact-revision acceptance. At most TWO correction attempts TOTAL across restarts/models/producers/reassignment/successors; unresolved failure escalates via Ilúvatar to Solomon. Final review gets no extra allowance. Record existing owners, paused dependencies, source/action grants, expiry and approved subscription route; no billed API calls or paid fallback.

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Documentation of the GitHub-sourced plugin install in a clean HOME, including enabled-plugin output, the installed skill path, and the first-push CI result.
+
+### Changed
+
+- Launch materials now record blog approval, the site branch and URL, and publication on 2026-11-03; the Show HN draft links to the published write-up.
+
 ## [1.0.0] - 2026-11-03
 
 ### Added

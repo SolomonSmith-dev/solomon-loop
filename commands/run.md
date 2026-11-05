@@ -1,5 +1,5 @@
 ---
-description: Run a plan with the Solomon Loop. One implementer Agent then one reviewer Agent per unchecked task, fix rounds up to 5, rulings in ledger.md, lessons promoted only when they recur.
+description: Run a plan with the Solomon Loop. One implementer then independent Review Office review per task, at most two total correction attempts per lineage, rulings in ledger.md, lessons promoted only when they recur.
 argument-hint: <plan-path>
 allowed-tools: Read, Write, Edit, Agent, Bash(test *), Bash(git status *), Bash(git diff *), Bash(git log *)
 ---
@@ -14,7 +14,7 @@ Plan path: `$ARGUMENTS`
 2. If `$ARGUMENTS` is empty or not a file, stop with one line: `solomon-loop:run: plan not found at <path>`.
 3. Slug = plan filename without directory or `.md`. Workspace = `.superpowers/sdd/<slug>/` if it exists, else `.solomon-loop/<slug>/`. If the workspace has no `loop-lens.md`, run the steps of `/solomon-loop:setup $ARGUMENTS` first, then continue.
 4. Read `loop-lens.md`, `lessons.md` and `ledger.md` from the workspace. Read `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/worker-report.md` and `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/reviewer-challenge.md`.
-5. **With superpowers:** if `superpowers:subagent-driven-development` is loaded in this session, say so in one line and defer to it: SDD dispatches the implementer and reviewer, owns the plan checkboxes and its own ledger. Your only additions are the two blocks below appended to SDD's prompts (worker block to the implementer prompt, challenge block after SDD's Part 2 of the reviewer prompt), plus the lessons and rulings steps. Skip sections 1 to 3 of this file in that case and follow SDD for ordering.
+5. **With superpowers:** if `superpowers:subagent-driven-development` is loaded in this session, say so in one line and defer to it: SDD supplies prompt/report mechanics and its ledger; Review Office still independently assigns reviewers and owns acceptance, and the two-total-attempt lineage counter below supersedes any conflicting SDD circuit breaker. Your only additions are the two blocks below appended to SDD's prompts (worker block to the implementer prompt, challenge block after SDD's Part 2 of the reviewer prompt), plus the lessons and rulings steps. Skip sections 1 to 3 of this file in that case and follow SDD for ordering.
 
 ## 1. For each unchecked task, in plan order
 
@@ -34,33 +34,28 @@ The brief contains, in this order:
 
 Dispatch one `Agent` (general-purpose) with the brief. Require the report in the order the worker block states: Sources, Risk, Mocks, Verification, TDD Evidence, then files changed, self-review, concerns. Save the report to `<workspace>/worker-report-task-<N>.md`.
 
-### 1c. Challenge: dispatch the reviewer
+### 1c. Challenge: request independent Review Office assignment
 
-Dispatch a second `Agent` with: the task text and acceptance checks, the diff (`git diff` for the task's files, or the file list when the repo is not git), the implementer's report, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled. The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new, and ends with Lessons lines or `Lessons: none`. Save to `<workspace>/reviewer-report-task-<N>.md`.
+Submit evidence to Review Office, which independently selects and dispatches a second `Agent` with: the task text and acceptance checks, the diff (`git diff` for the task's files, or the file list when the repo is not git), the implementer's report, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled. The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new, and ends with Lessons lines or `Lessons: none`. Save to `<workspace>/reviewer-report-task-<N>.md`.
 
 ### 1d. Fix rounds
 
-Any Critical or Important finding starts a fix round. Up to 5 rounds per task:
-
-- Rounds 1 to 3: resume the same implementer Agent (SendMessage with its id) with the findings verbatim.
-- Rounds 4 and 5: dispatch a fresh implementer Agent on a more capable model (pass `model` to the Agent tool) with the brief plus all findings so far.
-- After each round, re-dispatch the reviewer with the new diff and report (the challenge block scoped to the fix).
-- Round 5 still failing: stop and ask the user (hopeless-plan stop). Do not check the task off.
+A real Critical or Important finding starts a correction attempt. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. Review Office independently assigns scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
 
 ### 1e. Learn and record
 
 - Copy every Lessons line from the reviewer into `lessons.md` as a new row: `#`, task group (the task number or the plan's grouping), finding class, root cause, proposed improvement, `Recurrences` 1, `Status` candidate. If the same finding class already has a row, bump its `Recurrences` and add the task group instead of adding a row.
 - Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
-- Check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
+- Only after exact-revision Review Office acceptance and actual done evidence, check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
 
 ## 2. Stops
 
-Stop and ask the user before any of these; everything else is a Ruling:
+Check existing work-order authority before the following actions; obtain only missing authority. Already granted permission remains valid. Critical authority/privacy/spending/recovery failures halt affected work regardless of ordinary dispatch. Other in-scope choices are ledger rulings, never producer overrides of independent acceptance:
 
 1. An irreversible action (delete, force push, drop, overwrite a non-generated file outside the task's files).
 2. A security-sensitive action (secrets, auth, permissions, `.env`, credentials).
 3. An outward side effect (push, publish, post, send, network write, payment).
-4. A hopeless plan (a task that cannot pass its own done check, or round 5 failing).
+4. A hopeless plan (a task that cannot pass its own done check, or two correction attempts failing).
 5. Adopting any process change (editing the skill, templates, brief rules or `loop-lens.md` mid-run).
 
 ## 3. Promote (end of run)
@@ -69,3 +64,7 @@ Stop and ask the user before any of these; everything else is a Ruling:
 2. Every other candidate: set `Status` to `rejected` with the reason (`one occurrence` or `no concrete change`). Candidates the user declines become `declined`.
 3. Apply only what the user approves. An approved change to the skill's own files is `adopted` only after a skill check passes (frontmatter, length, trigger test).
 4. Final report: tasks done, tasks waiting on the user, rounds used per task, findings by severity, supported candidates, and the paths of `lessons.md` and `ledger.md`.
+
+## Authority
+
+Approved subscription capacity only; no billed API calls or paid fallback. Review Office acceptance grants no execution/disclosure/spending/release authority. Dispatch and delivery require actual source/action grants, permitted processors, expiry and existing ownership. Critical authority/privacy/spending/recovery failures halt affected pending work and dependents; no automatic restart. Preserve paused work.
