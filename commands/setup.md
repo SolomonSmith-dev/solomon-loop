@@ -52,7 +52,7 @@ Append any `Ruling:` line from step 3. If `ledger.md` already exists, append onl
 
 ## 6. Preserve review authority
 
-Before dispatch record the work-order lineage and persisted correction_count, preserving any existing count from predecessor/successor work on the same failure. Initial production is separate; at most TWO correction attempts TOTAL. Review Office independently selects reviewers and owns exact-revision acceptance. Producer and SDD cannot reset the count or override findings; unresolved failure escalates through Ilúvatar to Solomon. Review acceptance grants no execution/release authority.
+Before dispatch record the work-order lineage and persisted correction_count, preserving any existing count from predecessor/successor work on the same failure. Initial production is separate; at most TWO correction attempts TOTAL. An independent reviewer, never chosen by the producer, owns exact-revision acceptance. Producer and SDD cannot reset the count or override findings; unresolved failure escalates to the owner. Review acceptance grants no execution/release authority.
 
 ## 7. Report
 

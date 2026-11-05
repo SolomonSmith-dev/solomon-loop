@@ -22,6 +22,14 @@ Unedited output of a single run of the loop on a throwaway Node 22 repo (zero de
 
 Numbers: 3 tasks, rounds 1 / 1 / 2, 0 Critical, 1 Important (fixed), 11 Minor, 57 challenge attempts, 1 BROKE.
 
+## Version note
+
+This run used plugin 1.0.0. The files are left as produced, so they differ from 1.0.3 in three places:
+
+- **Fix rounds vs correction attempts.** "Rounds 1 / 1 / 2" counts review rounds. In 1.0.3 terms, Tasks 1 and 2 used 0 correction attempts and Task 3 used 1 of its 2.
+- **No review tiers.** `loop-lens.md` has no `Paths:` globs, so every task got the full Challenge. Under 1.0.3, Tasks 1 to 3 all touch `src/server.js` and `src/store.js` (input handling, ownership), so they would still be full tier.
+- **Full reports in the controller.** Reports were pasted back into the controller session. In 1.0.3, each agent writes its report file and returns at most 10 lines.
+
 ## Reproduce
 
 1. `git init` a scratch repo with `spec.md` as `docs/spec/todo-api.md`, `plan.md` as `docs/plans/todo-api.md` (uncheck the three tasks), and `package.json`.

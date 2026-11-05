@@ -1,5 +1,5 @@
 ---
-description: Run a plan with the Solomon Loop. One implementer then independent Review Office review per task, at most two total correction attempts per lineage, rulings in ledger.md, lessons promoted only when they recur.
+description: Run a plan with the Solomon Loop. One implementer then an independent reviewer per task, at most two total correction attempts per lineage, rulings in ledger.md, lessons promoted only when they recur.
 argument-hint: <plan-path>
 allowed-tools: Read, Write, Edit, Agent, Bash(test *), Bash(git status *), Bash(git diff *), Bash(git log *)
 ---
@@ -14,7 +14,7 @@ Plan path: `$ARGUMENTS`
 2. If `$ARGUMENTS` is empty or not a file, stop with one line: `solomon-loop:run: plan not found at <path>`.
 3. Slug = plan filename without directory or `.md`. Workspace = `.superpowers/sdd/<slug>/` if it exists, else `.solomon-loop/<slug>/`. If the workspace has no `loop-lens.md`, run the steps of `/solomon-loop:setup $ARGUMENTS` first, then continue.
 4. Read `loop-lens.md`, `lessons.md` and `ledger.md` from the workspace. Read `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/worker-report.md` and `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/reviewer-challenge.md`.
-5. **With superpowers:** if `superpowers:subagent-driven-development` is loaded in this session, say so in one line and defer to it: SDD supplies prompt/report mechanics and its ledger; Review Office still independently assigns reviewers and owns acceptance, and the two-total-attempt lineage counter below supersedes any conflicting SDD circuit breaker. Your only additions are the two blocks below appended to SDD's prompts (worker block to the implementer prompt, challenge block after SDD's Part 2 of the reviewer prompt), plus the lessons and rulings steps. Skip sections 1 to 3 of this file in that case and follow SDD for ordering.
+5. **With superpowers:** if `superpowers:subagent-driven-development` is loaded in this session, say so in one line and defer to it: SDD supplies prompt/report mechanics and its ledger; reviewer assignment stays independent and the independent reviewer owns acceptance, and the two-total-attempt lineage counter below supersedes any conflicting SDD circuit breaker. Your only additions are the two blocks below appended to SDD's prompts (worker block to the implementer prompt, challenge block after SDD's Part 2 of the reviewer prompt), plus the lessons and rulings steps. Skip sections 1 to 3 of this file in that case and follow SDD for ordering.
 
 ## 1. For each unchecked task, in plan order
 
@@ -35,19 +35,19 @@ The brief contains, in this order:
 
 Dispatch one `Agent` (general-purpose) with the brief. The implementer writes the report itself, in the order the worker block states (Sources, Risk, Mocks, Verification, TDD Evidence, then files changed, self-review, concerns), and returns only the 10-line summary. Do not read the report file; pass its path on.
 
-### 1c. Challenge: request independent Review Office assignment
+### 1c. Challenge: dispatch an independent reviewer
 
-First re-check the tier against the actual diff: `git diff --name-only <base>..<commit>`. A diff path matching any `Paths:` glob raises a light task to full (ledger it); nothing ever lowers a tier. Then submit evidence to Review Office, which independently selects and dispatches a second `Agent` with: the task text and acceptance checks, the commit range (the reviewer runs `git diff` itself), the implementer's report path, the tier, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled (Part 3 dropped for light tier). The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new, and ends with Lessons lines or `Lessons: none`. It writes the report to `<workspace>/reviewer-report-task-<N>.md` and returns only the 10-line summary. Read the report file only when the summary says `corrections-needed`, and then only its Critical and Important findings to brief the correction.
+First re-check the tier against the actual diff: `git diff --name-only <base>..<commit>`. A diff path matching any `Paths:` glob raises a light task to full (ledger it); nothing ever lowers a tier. Then dispatch a second, independent reviewer `Agent` (never the implementer, never one the implementer chose) with: the task text and acceptance checks, the commit range (the reviewer runs `git diff` itself), the implementer's report path, the tier, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled (Part 3 dropped for light tier). The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new, and ends with Lessons lines or `Lessons: none`. It writes the report to `<workspace>/reviewer-report-task-<N>.md` and returns only the 10-line summary. Read the report file only when the summary says `corrections-needed`, and then only its Critical and Important findings to brief the correction.
 
 ### 1d. Fix rounds
 
-A real Critical or Important finding starts a correction attempt. Minors, including compliance gaps the reviewer did not tie to a defect, never start one; fold them into a round that real findings already started, else list them in the final report. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. Review Office independently assigns scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
+A real Critical or Important finding starts a correction attempt. Minors, including compliance gaps the reviewer did not tie to a defect, never start one; fold them into a round that real findings already started, else list them in the final report. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. An independent reviewer handles the scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate to the owner. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
 
 ### 1e. Learn and record
 
 - Copy every Lessons line from the reviewer into `lessons.md` as a new row: `#`, task group (the task number or the plan's grouping), finding class, root cause, proposed improvement, `Recurrences` 1, `Status` candidate. If the same finding class already has a row, bump its `Recurrences` and add the task group instead of adding a row.
 - Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
-- Only after exact-revision Review Office acceptance and actual done evidence, check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
+- Only after exact-revision acceptance by the independent reviewer and actual done evidence, check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
 - Make the lessons, ledger and plan edits as parallel tool calls in ONE message per task, not one message per file.
 
 ### 1f. Controller context
@@ -76,4 +76,4 @@ Check existing work-order authority before the following actions; obtain only mi
 
 ## Authority
 
-Approved subscription capacity only; no billed API calls or paid fallback. Review Office acceptance grants no execution/disclosure/spending/release authority. Dispatch and delivery require actual source/action grants, permitted processors, expiry and existing ownership. Critical authority/privacy/spending/recovery failures halt affected pending work and dependents; no automatic restart. Preserve paused work.
+Approved subscription capacity only; no billed API calls or paid fallback. Review acceptance grants no execution/disclosure/spending/release authority. Dispatch and delivery require actual source/action grants, permitted processors, expiry and existing ownership. Critical authority/privacy/spending/recovery failures halt affected pending work and dependents; no automatic restart. Preserve paused work.

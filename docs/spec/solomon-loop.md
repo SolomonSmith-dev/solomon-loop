@@ -22,7 +22,7 @@ Install:
 ```
 Commands:
 - `/solomon-loop:setup <plan-path>`: reads a plan file, writes `.solomon-loop/<plan-slug>/loop-lens.md` (Review Focus, security surfaces, verify commands, mock boundaries) and `lessons.md` (candidate table). If `.superpowers/sdd/<plan>/` exists, writes there instead.
-- `/solomon-loop:run <plan-path>`: dispatches one implementer with the worker-report block; Review Office independently assigns reviewer and owns exact-revision acceptance. Persist TWO correction attempts TOTAL per task lineage across restarts/models/producers/reassignment/successors; unresolved failure escalates via Ilúvatar to Solomon. SDD supplies prompt mechanics, never overrides this policy. Review acceptance grants no execution/disclosure/spending/release authority.
+- `/solomon-loop:run <plan-path>`: dispatches one implementer with the worker-report block; an independent reviewer, never chosen by the producer, owns exact-revision acceptance. Persist TWO correction attempts TOTAL per task lineage across restarts/models/producers/reassignment/successors; unresolved failure escalates to the owner. SDD supplies prompt mechanics, never overrides this policy. Review acceptance grants no execution/disclosure/spending/release authority.
 - Skill `solomon-loop` (auto-triggers on subagent execution): the loop rules, both templates, the SDD adapter section.
 
 ## Repo layout

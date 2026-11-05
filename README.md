@@ -64,9 +64,9 @@ The delivery loop, per task:
 | Challenge | Reviewer | One break attempt per named risk and per missed one. Each result is HELD or BROKE with file and line. |
 | Learn | Reviewer, then controller | Every Critical or Important finding becomes a lesson line in `lessons.md`. |
 
-The controller dispatches an implementer and keeps the production ledger. Review Office independently assigns reviewers and owns exact-revision acceptance. Initial production permits at most TWO correction attempts TOTAL per task lineage, persisted across restarts, model/producer changes, reassignment and successor orders for the same failure. Two unsuccessful attempts escalate via Ilúvatar to Solomon; the producer cannot override review or reset the count.
+The controller dispatches an implementer and keeps the production ledger. An independent reviewer, never chosen by the producer, owns exact-revision acceptance. Initial production permits at most TWO correction attempts TOTAL per task lineage, persisted across restarts, model/producer changes, reassignment and successor orders for the same failure. Two unsuccessful attempts escalate to the owner; the producer cannot override review or reset the count.
 
-After the last task, Review Office assigns whole-branch Challenge for cross-task risks. Corrections consume affected lineages' remaining allowance; final review grants no extra attempt.
+After the last task, an independent reviewer runs the whole-branch Challenge for cross-task risks. Corrections consume affected lineages' remaining allowance; final review grants no extra attempt.
 
 I do not pretend the third loop is finished. The optimization loop needs fixed eval tasks and A/B worktrees against a frozen baseline, and today it runs by hand, not as a command. What ships is the delivery and learning loops, packaged and installable, with one real run as the example.
 
@@ -90,7 +90,7 @@ Then run it:
 /solomon-loop:run docs/plans/your-plan.md
 ```
 
-Per unchecked task: the implementer gets the task text, the acceptance checks, the relevant lens entries and the worker-report block. It commits and reports Sources, Risk, Mocks, Verification and TDD evidence before anything else. The reviewer gets the diff, that report and the challenge block, and returns findings by severity, every break attempt, a clean `git status --porcelain`, and lesson lines. Findings start fix rounds. The run copies candidate lessons and records rulings. Only exact-revision Review Office acceptance plus observed done evidence permits checking the task off. Acceptance grants no release, spending or disclosure authority.
+Per unchecked task: the implementer gets the task text, the acceptance checks, the relevant lens entries and the worker-report block. It commits and reports Sources, Risk, Mocks, Verification and TDD evidence before anything else. The reviewer gets the diff, that report and the challenge block, and returns findings by severity, every break attempt, a clean `git status --porcelain`, and lesson lines. Findings start fix rounds. The run copies candidate lessons and records rulings. Only exact-revision acceptance by the independent reviewer plus observed done evidence permits checking the task off. Acceptance grants no release, spending or disclosure authority.
 
 It stops for five things only:
 
@@ -122,7 +122,7 @@ When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work
 - SDD's dispatcher and prompts run every dispatch; `/solomon-loop:run` defers to them instead of building its own briefs.
 - The workspace becomes `.superpowers/sdd/<plan>/`; the lens, lessons and rulings live in SDD's ledger.
 - The worker-report block is appended to SDD's implementer prompt; the challenge block is appended after SDD's reviewer Part 2 and to the final whole-branch review.
-- Review Office owns reviewer assignment/acceptance. The TWO-TOTAL-attempt lineage counter supersedes conflicting SDD circuit breakers; existing user authority and critical-failure stops remain binding.
+- Reviewer assignment stays independent; the independent reviewer owns acceptance. The TWO-TOTAL-attempt lineage counter supersedes conflicting SDD circuit breakers; existing user authority and critical-failure stops remain binding.
 
 ## What a run looks like
 

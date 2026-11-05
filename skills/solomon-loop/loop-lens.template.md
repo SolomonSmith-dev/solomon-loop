@@ -46,4 +46,4 @@ Guidance: only the external services a test may stub (third-party HTTP APIs, pai
 
 ## Review authority and recovery
 
-Work-order lineage: [LINEAGE]. Persist correction_count (initial production excluded): [COUNT]. Review Office independently assigns reviewer and owns exact-revision acceptance. At most TWO correction attempts TOTAL across restarts/models/producers/reassignment/successors; unresolved failure escalates via Ilúvatar to Solomon. Final review gets no extra allowance. Record existing owners, paused dependencies, source/action grants, expiry and approved subscription route; no billed API calls or paid fallback.
+Work-order lineage: [LINEAGE]. Persist correction_count (initial production excluded): [COUNT]. An independent reviewer, never chosen by the producer, owns exact-revision acceptance. At most TWO correction attempts TOTAL across restarts/models/producers/reassignment/successors; unresolved failure escalates to the owner. Final review gets no extra allowance. Record existing owners, paused dependencies, source/action grants, expiry and approved subscription route; no billed API calls or paid fallback.

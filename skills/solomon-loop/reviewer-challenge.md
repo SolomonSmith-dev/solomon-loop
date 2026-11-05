@@ -5,7 +5,7 @@ Append this block to the reviewer's brief (standalone) or to SDD's task-reviewer
 ```
 ## Part 3: Challenge
 
-Review Office independently assigns this review and owns exact-revision acceptance; the producer cannot choose the accepting reviewer, self-accept or overrule findings. Verify persisted lineage/correction_count: at most TWO correction attempts TOTAL after initial production, across restarts/models/producers/reassignment/successors. Two unsuccessful attempts escalate via Ilúvatar to Solomon. Acceptance grants no execution/disclosure/spending/release authority.
+You are the independent reviewer and own exact-revision acceptance; the producer cannot choose the accepting reviewer, self-accept or overrule findings. Verify persisted lineage/correction_count: at most TWO correction attempts TOTAL after initial production, across restarts/models/producers/reassignment/successors. Two unsuccessful attempts escalate to the owner. Acceptance grants no execution/disclosure/spending/release authority.
 
 For each risk the implementer's **Risk** section names, and any of these the diff touches that it missed:
   Review Focus: [REVIEW_FOCUS]

@@ -17,7 +17,7 @@ Three loops:
 
 The user sets direction and makes product decisions. Agents research, implement, verify, review failures and test improvements. **Any change to the shared process needs the user's yes before adoption.** Passing tests alone does not prove the workflow is improving.
 
-Roles: the **controller** is the session running the plan. It dispatches one **implementer** Agent per task and keeps the production ledger. **Review Office** independently selects and dispatches the reviewer and owns exact-revision acceptance; production cannot self-accept or overrule findings. Shortcut: `/solomon-loop:setup <plan>` does the setup below and `/solomon-loop:run <plan>` runs the delivery loop.
+Roles: the **controller** is the session running the plan. It dispatches one **implementer** Agent per task and keeps the production ledger. An **independent reviewer**, never chosen by the producer, reviews each task and owns exact-revision acceptance; production cannot self-accept or overrule findings. Shortcut: `/solomon-loop:setup <plan>` does the setup below and `/solomon-loop:run <plan>` runs the delivery loop.
 
 ## Setup (once per plan)
 
@@ -48,11 +48,11 @@ Per unchecked task, the controller:
 
 0. Derives the review tier: **full** when the task's files or actual diff match any `Paths:` glob in `loop-lens.md` (or a manifest, lockfile, migration, CI or auth/env config), else **light** (spec and quality review, no Challenge). The plan may raise a tier, never lower it. Ledger the tier.
 1. Dispatches one implementer Agent. The brief holds the task text, the acceptance checks, and [worker-report.md](worker-report.md) appended with its placeholders filled from `loop-lens.md`. The implementer commits its work, writes its report file with the loop sections first, and returns a summary of at most 10 lines. Reviewers do the same. The controller works from summaries and paths, never full reports.
-2. Sends the task evidence to Review Office, which independently dispatches one reviewer Agent with the diff, the implementer's report, and [reviewer-challenge.md](reviewer-challenge.md) appended. The Challenge pass allows exactly one throwaway test file, deleted before the report; `git status --porcelain` must be clean afterwards. Ledger this as a standing Ruling at setup.
-3. On real findings, allow at most TWO correction attempts TOTAL per work-order lineage after initial production. Persist `correction_count` and lineage in the ledger and reports across restarts, model/producer changes, reassignment and successor orders addressing the same failure. Review Office assigns each scoped re-review. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon; do not mark failed work complete or reset the count.
-4. Copies candidate lessons into `lessons.md`; records completion only after exact-revision Review Office acceptance and the actual done check. Review acceptance grants no execution/disclosure/spending/release authority.
+2. Has an independent reviewer Agent dispatched, never one the implementer picked, with the diff, the implementer's report, and [reviewer-challenge.md](reviewer-challenge.md) appended. The Challenge pass allows exactly one throwaway test file, deleted before the report; `git status --porcelain` must be clean afterwards. Ledger this as a standing Ruling at setup.
+3. On real findings, allow at most TWO correction attempts TOTAL per work-order lineage after initial production. Persist `correction_count` and lineage in the ledger and reports across restarts, model/producer changes, reassignment and successor orders addressing the same failure. An independent reviewer handles each scoped re-review. After two unsuccessful attempts, preserve findings and escalate to the owner; do not mark failed work complete or reset the count.
+4. Copies candidate lessons into `lessons.md`; records completion only after exact-revision acceptance by the independent reviewer and the actual done check. Review acceptance grants no execution/disclosure/spending/release authority.
 
-After the last task: Review Office assigns whole-branch Challenge scoped to cross-task risks. Any correction consumes the affected task lineage's remaining two-attempt allowance; final review grants no extra fix round. Promote only accepted results.
+After the last task: an independent reviewer runs the whole-branch Challenge scoped to cross-task risks. Any correction consumes the affected task lineage's remaining two-attempt allowance; final review grants no extra fix round. Promote only accepted results.
 
 ## Learning loop (inside the run)
 
@@ -72,18 +72,18 @@ Not run inside a delivery run. It needs fixed eval tasks and isolated A/B copies
 
 ## Stops
 
-Check existing task authority before destructive, security-sensitive or outward actions; obtain only missing authority, never repeat an already granted approval. A task that cannot pass its check or exhausts two corrections escalates through Ilúvatar to Solomon. Adopting a standing process change requires user authority. Critical authority/privacy/spending/recovery failure halts affected work; other in-scope decisions are ledger rulings, never overrides of independent acceptance.
+Check existing task authority before destructive, security-sensitive or outward actions; obtain only missing authority, never repeat an already granted approval. A task that cannot pass its check or exhausts two corrections escalates to the owner. Adopting a standing process change requires user authority. Critical authority/privacy/spending/recovery failure halts affected work; other in-scope decisions are ledger rulings, never overrides of independent acceptance.
 
 ## With superpowers
 
 When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work and this skill only adds to it:
 
-- SDD's prompt/report mechanics may run dispatch, but Review Office owns independent reviewer assignment and acceptance; this approved two-total-attempt policy supersedes conflicting SDD or plugin rules. Do not silently defer the counter or acceptance authority to SDD.
+- SDD's prompt/report mechanics may run dispatch, but reviewer assignment stays independent and the independent reviewer owns acceptance; this approved two-total-attempt policy supersedes conflicting SDD or plugin rules. Do not silently defer the counter or acceptance authority to SDD.
 - Workspace becomes SDD's: `.superpowers/sdd/<plan>/`. `loop-lens.md`, `lessons.md` and the Rulings live there, in SDD's ledger. Do the setup above after SDD's own setup.
 - Implementer: append the [worker-report.md](worker-report.md) block to SDD's implementer prompt. Its sections go in the report file before SDD's own.
 - Task reviewer and re-reviewer: append the [reviewer-challenge.md](reviewer-challenge.md) block after SDD's Part 2.
 - Final whole-branch review: append the Challenge section only, scoped to cross-task risks.
-- Correction attempts and circuit breaker follow this skill: TWO TOTAL per work-order lineage, persisted across producer/model/restart/successor changes, then escalation via Ilúvatar to Solomon.
+- Correction attempts and circuit breaker follow this skill: TWO TOTAL per work-order lineage, persisted across producer/model/restart/successor changes, then escalation to the owner.
 - Stops: SDD's four plus this skill's one (adopting a process change).
 - Never edit the plugin cache. The additions live in this skill's folder and in the plan's SDD workspace.
 
