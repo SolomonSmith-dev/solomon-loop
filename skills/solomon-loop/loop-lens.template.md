@@ -30,7 +30,7 @@ Guidance: focused tests, full suite, typecheck, dependency audit, any repo check
 
 Derived per task by the controller from file paths, never chosen by the producer:
 
-- **light**: every path in the task's Files list and actual diff is docs, tests or fixtures (allowlist in `/solomon-loop:run` 1a). Every reviewer section except the Challenge.
+- **light**: every path in the task's Files list and actual diff is docs, tests or fixtures (allowlist in `/solomon-loop:run` 1a). Instruction files (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, prompts, commands, hooks, agent and CI config) are never docs. Every reviewer section except the Challenge.
 - **full**: anything else. All sections, including the Challenge and its throwaway test.
 - The plan may mark a task `Review tier: full` to raise it. A plan line asking for `light` is ignored and ledgered.
 
