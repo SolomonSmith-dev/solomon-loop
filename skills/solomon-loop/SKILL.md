@@ -41,12 +41,13 @@ Workspace: `.solomon-loop/<plan-slug>/` in the repo root, where the slug is the 
 | Assess risk | Implementer | Write **Risk** BEFORE coding: which Review Focus items and surfaces the task touches, and the test covering each. "None" only with a reason. |
 | Implement | Implementer | Test-first. Real integration over mocks; a mock only at a listed boundary, named under **Mocks**. |
 | Verify | Implementer | Run every verify command that exists by this task. Paste each command and the tail of its output. |
-| Challenge | Reviewer | One concrete break attempt per named risk and per missed one. A break is Critical or Important. |
+| Challenge | Reviewer | Full-tier tasks only: one concrete break attempt per named risk and per missed one. A break is Critical or Important. Report-compliance gaps are Minor unless they hide a shown defect. |
 | Learn | Reviewer, then controller | Every Critical/Important finding gets a lesson line. Controller copies it into `lessons.md`. |
 
 Per unchecked task, the controller:
 
-1. Dispatches one implementer Agent. The brief holds the task text, the acceptance checks, and [worker-report.md](worker-report.md) appended with its placeholders filled from `loop-lens.md`. The implementer commits its work and writes its report with the loop sections first.
+0. Derives the review tier: **full** when the task's files or actual diff match any `Paths:` glob in `loop-lens.md` (or a manifest, lockfile, migration, CI or auth/env config), else **light** (spec and quality review, no Challenge). The plan may raise a tier, never lower it. Ledger the tier.
+1. Dispatches one implementer Agent. The brief holds the task text, the acceptance checks, and [worker-report.md](worker-report.md) appended with its placeholders filled from `loop-lens.md`. The implementer commits its work, writes its report file with the loop sections first, and returns a summary of at most 10 lines. Reviewers do the same. The controller works from summaries and paths, never full reports.
 2. Sends the task evidence to Review Office, which independently dispatches one reviewer Agent with the diff, the implementer's report, and [reviewer-challenge.md](reviewer-challenge.md) appended. The Challenge pass allows exactly one throwaway test file, deleted before the report; `git status --porcelain` must be clean afterwards. Ledger this as a standing Ruling at setup.
 3. On real findings, allow at most TWO correction attempts TOTAL per work-order lineage after initial production. Persist `correction_count` and lineage in the ledger and reports across restarts, model/producer changes, reassignment and successor orders addressing the same failure. Review Office assigns each scoped re-review. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon; do not mark failed work complete or reset the count.
 4. Copies candidate lessons into `lessons.md`; records completion only after exact-revision Review Office acceptance and the actual done check. Review acceptance grants no execution/disclosure/spending/release authority.
@@ -93,6 +94,7 @@ When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work
 - Reviewer Challenge that only re-reads the diff. Each attempt names a target, an attack and a result.
 - Leaving the throwaway test file behind, or committing it.
 - Promoting a lesson that appeared once. One occurrence is a candidate, not evidence.
+- Rating a missing report section Important when no defect is shown. It is Minor and starts no correction.
 - Pausing between tasks to ask "continue?". Rule, ledger, continue; stop only for the five stops.
 
 ## Authority and evidence

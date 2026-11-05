@@ -28,25 +28,34 @@ The brief contains, in this order:
 - Acceptance checks: every Done check as `command` plus the expected output, and its "Fails when" line. If the plan gives none, write one observable check from the task's files and say it was derived.
 - The relevant Review Focus items, surfaces, verify commands that exist by this task number, and mock boundaries, copied from `loop-lens.md`.
 - Repo rules the plan states for every brief (shell aliases to avoid, commit conventions, forbidden trailers).
-- The worker-report block from `worker-report.md`, appended last, with `[REVIEW_FOCUS]`, `[SECURITY_SURFACES]`, `[MOCK_BOUNDARIES]` and `[VERIFY_COMMANDS]` filled from `loop-lens.md`.
+- The worker-report block from `worker-report.md`, appended last, with `[REVIEW_FOCUS]`, `[SECURITY_SURFACES]`, `[MOCK_BOUNDARIES]` and `[VERIFY_COMMANDS]` filled from `loop-lens.md`, and `[REPORT_PATH]` = `<workspace>/worker-report-task-<N>.md`.
+- Review tier: match the task's Files list against every `Paths:` glob in `loop-lens.md` and the fixed full-tier list in its Review tiers section. Any match, or `Review tier: full` in the plan, is **full**; otherwise **light**. Ledger it: `Ruling (YYYY-MM-DD, Task N): tier <full|light> | matched <glob or none> | a light task hides a surface bug`.
 
 ### 1b. Implement: dispatch the implementer
 
-Dispatch one `Agent` (general-purpose) with the brief. Require the report in the order the worker block states: Sources, Risk, Mocks, Verification, TDD Evidence, then files changed, self-review, concerns. Save the report to `<workspace>/worker-report-task-<N>.md`.
+Dispatch one `Agent` (general-purpose) with the brief. The implementer writes the report itself, in the order the worker block states (Sources, Risk, Mocks, Verification, TDD Evidence, then files changed, self-review, concerns), and returns only the 10-line summary. Do not read the report file; pass its path on.
 
 ### 1c. Challenge: request independent Review Office assignment
 
-Submit evidence to Review Office, which independently selects and dispatches a second `Agent` with: the task text and acceptance checks, the diff (`git diff` for the task's files, or the file list when the repo is not git), the implementer's report, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled. The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new, and ends with Lessons lines or `Lessons: none`. Save to `<workspace>/reviewer-report-task-<N>.md`.
+First re-check the tier against the actual diff: `git diff --name-only <base>..<commit>`. A diff path matching any `Paths:` glob raises a light task to full (ledger it); nothing ever lowers a tier. Then submit evidence to Review Office, which independently selects and dispatches a second `Agent` with: the task text and acceptance checks, the commit range (the reviewer runs `git diff` itself), the implementer's report path, the tier, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled (Part 3 dropped for light tier). The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new, and ends with Lessons lines or `Lessons: none`. It writes the report to `<workspace>/reviewer-report-task-<N>.md` and returns only the 10-line summary. Read the report file only when the summary says `corrections-needed`, and then only its Critical and Important findings to brief the correction.
 
 ### 1d. Fix rounds
 
-A real Critical or Important finding starts a correction attempt. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. Review Office independently assigns scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
+A real Critical or Important finding starts a correction attempt. Minors, including compliance gaps the reviewer did not tie to a defect, never start one; fold them into a round that real findings already started, else list them in the final report. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. Review Office independently assigns scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate through Ilúvatar to Solomon. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
 
 ### 1e. Learn and record
 
 - Copy every Lessons line from the reviewer into `lessons.md` as a new row: `#`, task group (the task number or the plan's grouping), finding class, root cause, proposed improvement, `Recurrences` 1, `Status` candidate. If the same finding class already has a row, bump its `Recurrences` and add the task group instead of adding a row.
 - Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
 - Only after exact-revision Review Office acceptance and actual done evidence, check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
+- Make the lessons, ledger and plan edits as parallel tool calls in ONE message per task, not one message per file.
+
+### 1f. Controller context
+
+The controller's own context is the largest cost in a run (measured 2026-11-04: 25 to 55% of each task, median 403k tokens re-read per turn). Keep it small:
+
+- Never paste a report, diff or full test output into the controller's context; work from the 10-line summaries and file paths.
+- After every 5 accepted tasks, if unchecked tasks remain, end with one line: `solomon-loop:run: 5 tasks accepted, context reset due. Resume: /solomon-loop:run $ARGUMENTS`. The ledger, lessons and plan checkboxes hold all state, so a fresh session resumes from the next unchecked task. This is not a "continue?" question.
 
 ## 2. Stops
 
@@ -63,7 +72,7 @@ Check existing work-order authority before the following actions; obtain only mi
 1. Supported = a finding class that recurred in 2 or more task groups and has a concrete proposed improvement. For each, show the user: finding class, task groups, the exact proposed edit, and where it goes (the repo's brief file, `loop-lens.md` defaults, or the skill's templates). Set `Status` to `supported` and wait for a yes or no per item.
 2. Every other candidate: set `Status` to `rejected` with the reason (`one occurrence` or `no concrete change`). Candidates the user declines become `declined`.
 3. Apply only what the user approves. An approved change to the skill's own files is `adopted` only after a skill check passes (frontmatter, length, trigger test).
-4. Final report: tasks done, tasks waiting on the user, rounds used per task, findings by severity, supported candidates, and the paths of `lessons.md` and `ledger.md`.
+4. Final report: tasks done, tasks waiting on the user, tier and rounds used per task, findings by severity, unfixed Minors, supported candidates, and the paths of `lessons.md` and `ledger.md`.
 
 ## Authority
 
