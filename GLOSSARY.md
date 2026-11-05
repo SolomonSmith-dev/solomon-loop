@@ -12,7 +12,7 @@
 | independent reviewer | The reviewer Agent for a task. Never the implementer and never chosen by the implementer; it alone accepts the exact revision. Map it to your own review role in your setup if you have one. |
 | owner | The person who set up the run and decides on escalations, typically the user. Your setup may route escalations to them through a coordinator. |
 | correction attempt | One fix dispatch after a Critical or Important finding. At most two per task lineage, counted across restarts and model or producer changes; then the task escalates to the owner. |
-| review tier | Per-task review depth derived from loop-lens `Paths:` globs against the task's files and diff. **full** includes the Challenge; **light** skips it. A plan may raise a tier, never lower it. |
+| review tier | Per-task review depth set from file paths. **light** when every path in the task's files and diff is docs, tests or fixtures; **full** otherwise. Light skips only the Challenge. A plan may raise a tier, never lower it. |
 | HELD | A challenge outcome: the reviewer tried to break the claim and could not. |
 | BROKE | A challenge outcome: the reviewer found a counterexample or a failing command, so the task gets a correction attempt. |
 | lesson | One row in `lessons.md`: task group, finding class, root cause, proposed improvement, recurrence count and status. |

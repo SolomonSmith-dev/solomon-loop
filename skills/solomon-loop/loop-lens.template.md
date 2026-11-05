@@ -6,20 +6,16 @@ Plan: [PLAN_PATH]. Written [DATE]. Fill every list from the plan and spec; delet
 
 Guidance: the plan's named failure modes, 3 to 6 items. None named in the plan: derive them from the spec and ledger a Ruling that says so.
 
-Each item ends with `Paths:` and the repo globs where it lives (used for review tiers).
-
-- [FAILURE_MODE_1]. Paths: `[GLOB]`
-- [FAILURE_MODE_2]. Paths: `[GLOB]`
-- [FAILURE_MODE_3]. Paths: `[GLOB]`
+- [FAILURE_MODE_1]
+- [FAILURE_MODE_2]
+- [FAILURE_MODE_3]
 
 ## Security/privacy surfaces
 
 Guidance: auth, ownership checks, crypto, secrets or personal data in logs, data leaving the device, plus anything this project adds. "None" needs a reason.
 
-Each item ends with `Paths:` and the repo globs where it lives. A surface that cannot be pinned to paths gets `Paths: *` (every task is full tier).
-
-- [SURFACE_1]. Paths: `[GLOB]`
-- [SURFACE_2]. Paths: `[GLOB]`
+- [SURFACE_1]
+- [SURFACE_2]
 
 ## Verify commands
 
@@ -32,10 +28,10 @@ Guidance: focused tests, full suite, typecheck, dependency audit, any repo check
 
 ## Review tiers
 
-Derived per task by the controller, never chosen by the producer:
+Derived per task by the controller from file paths, never chosen by the producer:
 
-- **full**: the task's Files list or its actual diff matches any `Paths:` glob above, or touches a dependency manifest, lockfile, migration, CI config or auth/env config. Parts 1 to 4.
-- **light**: nothing matches. Every reviewer section except the Challenge: no break attempts, no throwaway test; report compliance and lessons still run.
+- **light**: every path in the task's Files list and actual diff is docs, tests or fixtures (allowlist in `/solomon-loop:run` 1a). Every reviewer section except the Challenge.
+- **full**: anything else. All sections, including the Challenge and its throwaway test.
 - The plan may mark a task `Review tier: full` to raise it. A plan line asking for `light` is ignored and ledgered.
 
 ## Mock boundaries

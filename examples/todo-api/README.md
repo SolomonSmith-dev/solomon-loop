@@ -27,7 +27,7 @@ Numbers: 3 tasks, rounds 1 / 1 / 2, 0 Critical, 1 Important (fixed), 11 Minor, 5
 This run used plugin 1.0.0. The files are left as produced, so they differ from 1.0.3 in three places:
 
 - **Fix rounds vs correction attempts.** "Rounds 1 / 1 / 2" counts review rounds. In 1.0.3 terms, Tasks 1 and 2 used 0 correction attempts and Task 3 used 1 of its 2.
-- **No review tiers.** `loop-lens.md` has no `Paths:` globs and no Review tiers section, so every task got the full Challenge. Under 1.0.3 this counts as a legacy lens and every task is still full tier by the fail-safe rule, not by path matching. A fresh setup would add `Paths:` globs; Tasks 1 to 3 all touch `src/server.js` and `src/store.js` (input handling, ownership), so they would match and stay full.
+- **No review tiers.** Every task got the full Challenge. Under 1.0.3 all three would still be full tier: each changes `src/server.js` and `src/store.js`, which are not docs, tests or fixtures.
 - **Full reports in the controller.** Reports were pasted back into the controller session. In 1.0.3, each agent writes its report file and returns at most 10 lines.
 
 ## Reproduce

@@ -46,6 +46,7 @@ In the report, keep Part 4 Lessons and a list of unfixed Minors as their own hea
 
 Write the full report to [REPORT_PATH]. Your final message back is at most 10 lines and nothing else:
 VERDICT: accept | corrections-needed
+REVIEWED: <full SHA you ran git diff against>
 TIER: full | light
 BROKE: <target | file:line, one line each, or none>
 IMPORTANT: <count> CRITICAL: <count> MINOR: <count>

@@ -32,8 +32,6 @@ Read the template at `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/loop-lens.templa
 3. **Verify commands**: focused tests, full suite, typecheck, dependency audit, lint, any repo check script. One line per command in the form `` `<command>` (from Task N) `` where N is the first task after which the command exists. Take commands from the plan's "Done check" lines and the repo's package or build files.
 4. **Mock boundaries**: the external services where a mock is allowed (third-party APIs, paid services, email, payment). Everything else is real integration. If the plan touches no external service, write `None: all integration is real`.
 
-Every Review Focus item and surface ends with `Paths:` and the repo globs where it lives, read from the plan's Files lines and the repo tree. If an item cannot be pinned, write `Paths: *` and ledger `Ruling (YYYY-MM-DD, Task 0): <item> unpinned | no stable path | every task gets full review`.
-
 Keep each list short. A line nobody can act on is a line to delete.
 
 ## 4. Write `<workspace>/lessons.md`
