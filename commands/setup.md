@@ -48,6 +48,10 @@ Ruling (YYYY-MM-DD, Task 0): the task reviewer's Challenge pass may create ONE t
 
 Append any `Ruling:` line from step 3. If `ledger.md` already exists, append only rulings that are not already present.
 
-## 6. Report
+## 6. Preserve review authority
+
+Before dispatch record the work-order lineage and persisted correction_count, preserving any existing count from predecessor/successor work on the same failure. Initial production is separate; at most TWO correction attempts TOTAL. An independent reviewer, never chosen by the producer, owns exact-revision acceptance. Producer and SDD cannot reset the count or override findings; unresolved failure escalates to the owner. Review acceptance grants no execution/release authority.
+
+## 7. Report
 
 Print the three absolute paths, one per line, then one line saying which workspace rule applied (`SDD workspace found` or `created .solomon-loop/<slug>/`). Nothing else. Do not start running tasks; that is `/solomon-loop:run <plan-path>`.

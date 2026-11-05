@@ -26,8 +26,20 @@ Guidance: focused tests, full suite, typecheck, dependency audit, any repo check
 - `[TYPECHECK_OR_LINT_COMMAND]` (from task [N])
 - `[DEPENDENCY_AUDIT_COMMAND]` (from task [N])
 
+## Review tiers
+
+Derived per task by the controller from file paths, never chosen by the producer:
+
+- **light**: every path in the task's Files list and actual diff is docs, tests or fixtures (allowlist in `/solomon-loop:run` 1a). Instruction files (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, prompts, commands, hooks, agent and CI config) are never docs. Every reviewer section except the Challenge.
+- **full**: anything else. All sections, including the Challenge and its throwaway test.
+- The plan may mark a task `Review tier: full` to raise it. A plan line asking for `light` is ignored and ledgered.
+
 ## Mock boundaries
 
 Guidance: only the external services a test may stub (third-party HTTP APIs, paid services, email senders). Everything else is real: real DB, real app, real primitives, real browser. An empty list means no mocks.
 
 - [EXTERNAL_SERVICE_1]
+
+## Review authority and recovery
+
+Work-order lineage: [LINEAGE]. Persist correction_count (initial production excluded): [COUNT]. An independent reviewer, never chosen by the producer, owns exact-revision acceptance. At most TWO correction attempts TOTAL across restarts/models/producers/reassignment/successors; unresolved failure escalates to the owner. Final review gets no extra allowance. Record existing owners, paused dependencies, source/action grants, expiry and approved subscription route; no billed API calls or paid fallback.

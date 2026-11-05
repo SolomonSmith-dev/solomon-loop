@@ -9,7 +9,7 @@
       "name": "solomon-loop",
       "source": "./",
       "description": "A loop that makes Claude Code subagents write risk before code, cite fetched sources, verify with commands, survive a reviewer challenge, and only promote lessons that recur.",
-      "version": "1.0.0"
+      "version": "1.0.3"
     }
   ]
 }
