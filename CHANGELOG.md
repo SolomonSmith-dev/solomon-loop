@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-11-10
+
+### Changed
+
+- Version bump so installs can tell this text from the 1.0.3 copies already in circulation. The skill, `/solomon-loop:run` and `/solomon-loop:setup` now agree, including the controller-context rules (10-line summaries, context reset after every 5 accepted tasks).
+
 ## [1.0.3] - 2026-11-04
 
 ### Added
