@@ -18,4 +18,3 @@ Claude Code plugin: risk-before-code, attacking reviewer, verified commands, pro
 |----------|----------|----------|
 | README | `README.md` | Why + install |
 | Graph | `graphify-out/` | Code/docs graph |
-| Local mapping | `~/Projects/personal-tech-ops CLAUDE.md (Solomon Loop roles)` | Review Office / Ilúvatar |

@@ -9,7 +9,7 @@ A public Claude Code plugin, `solomon-loop`, that makes subagents write risk bef
 ## Non-goals
 
 - No CLI package, no npm or PyPI publish, no domain.
-- No agent-agnostic rewrite (Codex, Hermes read the markdown as-is but are not targeted).
+- No agent-agnostic rewrite (other agent harnesses can read the markdown as-is but are not targeted).
 - No post, push or repo creation without Solomon's explicit yes.
 - No change to the loop's rules themselves (define, research, assess risk, implement, verify, challenge, learn, validate, promote).
 
