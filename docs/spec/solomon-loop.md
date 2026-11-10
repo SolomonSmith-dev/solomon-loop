@@ -4,14 +4,14 @@ Date: 2026-11-03. Readback confirmed by Solomon in the predev interview.
 
 ## Goal
 
-A public Claude Code plugin, `solomon-loop`, that makes subagents write risk before code, cite fetched sources, verify with real commands, survive a reviewer challenge, and only promote lessons that recur. Install in two documented commands. Works with vanilla Claude Code; defers to superpowers subagent-driven-development (SDD) when that skill is loaded.
+A public Claude Code plugin, `solomon-loop`, that makes subagents write risk before code, cite fetched sources, verify with real commands, survive a reviewer challenge, and log lessons to one cross-run file reviewed on a schedule. Install in two documented commands. Works with vanilla Claude Code; defers to superpowers subagent-driven-development (SDD) when that skill is loaded.
 
 ## Non-goals
 
 - No CLI package, no npm or PyPI publish, no domain.
 - No agent-agnostic rewrite (other agent harnesses can read the markdown as-is but are not targeted).
 - No post, push or repo creation without Solomon's explicit yes.
-- No change to the loop's rules themselves (define, research, assess risk, implement, verify, challenge, learn, validate, promote).
+- No change to the loop's rules themselves (define, research, assess risk, implement, verify, challenge; lessons logging changed in 1.0.4).
 
 ## Interface
 

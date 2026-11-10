@@ -6,7 +6,7 @@ Issues are welcome. Paste the relevant report sections (worker report, reviewer 
 
 ## Pull requests
 
-A PR that changes the loop's rules or templates follows the loop's own promote rule: cite the finding class and at least two task groups where it recurred. A lesson that appeared once stays a candidate and does not change the rules.
+A PR that changes the loop's rules or templates follows the loop's own rule: cite the finding class and at least two runs where it recurred (rows in `.solomon-loop/lessons.md`). A lesson that appeared in one run does not change the rules.
 
 Documentation, typo and packaging PRs need no recurrence evidence.
 

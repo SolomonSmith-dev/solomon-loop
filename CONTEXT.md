@@ -1,6 +1,6 @@
 # solomon-loop
 
-Claude Code plugin: risk-before-code, attacking reviewer, verified commands, promote lessons only when they recur.
+Claude Code plugin: risk-before-code, attacking reviewer, verified commands, log lessons across runs.
 
 ## Task Routing
 

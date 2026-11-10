@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Version bump so installs can tell this text from the 1.0.3 copies already in circulation. The skill, `/solomon-loop:run` and `/solomon-loop:setup` now agree, including the controller-context rules (10-line summaries, context reset after every 5 accepted tasks).
+- Private role and system names removed from the public text. `scripts/check-private-names.sh` runs in CI and fails if they return.
+- **Breaking:** the per-run Learn, Validate and Promote stages are replaced by one cross-run `.solomon-loop/lessons.md` (date, run, lesson, evidence pointer, recurrences). Recurrence is counted across runs when a row is appended; promotion is the owner's scheduled review of that file. `/solomon-loop:setup` finds or creates the file; the per-run `lessons.md` is gone. The per-run ledger of rulings stays.
 
 ## [1.0.3] - 2026-11-04
 

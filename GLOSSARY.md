@@ -15,13 +15,8 @@
 | review tier | Per-task review depth set from file paths. **light** when every path in the task's files and diff is docs, tests or fixtures, and none is an instruction file (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, prompts, commands, hooks); **full** otherwise. Light skips only the Challenge. A plan may raise a tier, never lower it. |
 | HELD | A challenge outcome: the reviewer tried to break the claim and could not. |
 | BROKE | A challenge outcome: the reviewer found a counterexample or a failing command, so the task gets a correction attempt. |
-| lesson | One row in `lessons.md`: task group, finding class, root cause, proposed improvement, recurrence count and status. |
-| candidate | Lesson status for a finding seen once. It is recorded and nothing else changes. |
-| supported | Lesson status once the same finding class recurred in a second task group. It is eligible for promotion. |
-| rejected | Lesson status when the controller decides the proposed improvement is wrong or would not have prevented the finding. |
-| declined | Lesson status when the improvement is sound but the owner chooses not to adopt it, with the reason recorded. |
-| adopted | Lesson status once the improvement has been written into the loop's rules or templates. |
+| lesson | One row in the cross-run `.solomon-loop/lessons.md`: date, run, lesson, evidence pointer and recurrence count. |
 | ruling | An evidence-backed operational decision recorded in the ledger. Producers may request correction or challenge a finding with evidence; the independent reviewer owns acceptance and cannot be overridden by a ruling. |
-| ledger | The per-plan `ledger.md` that records each dispatch, challenge outcome, ruling and lesson line in order. |
-| promote | Moving a supported lesson into the loop's rules or templates. Requires the same finding class in at least two task groups. |
-| task group | A set of plan tasks that touch the same component or concern. Recurrence is counted across task groups, not within one. |
+| ledger | The per-plan `ledger.md` that records each dispatch, challenge outcome and ruling in order. |
+| promote | Moving a lesson into the loop's rules or templates. Done by the owner in a scheduled review of the cross-run lessons file, for rows with a recurrence count of 2 or more. It is not a per-run stage. |
+| recurrence | The number of runs in which the same finding class was logged. Counted when a row is appended; never within one run. |

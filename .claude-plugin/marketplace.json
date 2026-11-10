@@ -3,12 +3,12 @@
   "owner": {
     "name": "Solomon Smith"
   },
-  "description": "Marketplace for the solomon-loop plugin: risk before code, challenge before merge, lessons promoted only when they recur.",
+  "description": "Marketplace for the solomon-loop plugin: risk before code, challenge before merge, lessons logged across runs.",
   "plugins": [
     {
       "name": "solomon-loop",
       "source": "./",
-      "description": "A loop that makes Claude Code subagents write risk before code, cite fetched sources, verify with commands, survive a reviewer challenge, and only promote lessons that recur.",
+      "description": "A loop that makes Claude Code subagents write risk before code, cite fetched sources, verify with commands, survive a reviewer challenge, and log lessons to one cross-run file.",
       "version": "1.0.4"
     }
   ]

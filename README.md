@@ -2,7 +2,7 @@
 
 *Wisdom for coding agents: risk before code, challenge before merge.*
 
-A Claude Code plugin that makes subagents write risk before code, cite fetched sources, verify with real commands, survive a reviewer that tries to break the work, and promote a lesson only after it recurs.
+A Claude Code plugin that makes subagents write risk before code, cite fetched sources, verify with real commands, survive a reviewer that tries to break the work, and log lessons to one cross-run file so recurrence across runs is counted.
 
 ![validate](https://github.com/SolomonSmith-dev/solomon-loop/actions/workflows/validate.yml/badge.svg) ![license](https://img.shields.io/badge/license-MIT-blue.svg)
 
@@ -40,13 +40,13 @@ Ask an agent to "add an endpoint" and it adds an endpoint another tenant can rea
 
 ### The lesson learned once and lost
 
-The same class of bug gets fixed in task 4 and again in task 7, and nobody notices it was the same class. Or the opposite: the brief grows a new rule after every single finding until it is 40 rules long and unread. The loop records every Critical or Important finding as a lesson line, counts recurrence across task groups, and promotes a lesson only when it recurs and you say yes.
+The same class of bug gets fixed in task 4 and again in task 7, and nobody notices it was the same class. Or the opposite: the brief grows a new rule after every single finding until it is 40 rules long and unread. The loop appends every Critical or Important finding to one cross-run lessons file, counts recurrence across runs, and leaves promotion to your scheduled review of that file.
 
 ## What it does
 
-**Define, research, assess risk, implement, verify, challenge, learn, validate, promote.**
+**Define, research, assess risk, implement, verify, challenge, record lessons.**
 
-Three loops run on those nine steps:
+Three loops run on those steps:
 
 - **Delivery** finishes real work against observable acceptance criteria.
 - **Learning** finds why something failed and proposes a testable improvement.
@@ -62,7 +62,7 @@ The delivery loop, per task:
 | Implement | Implementer | Test-first. Real integration over mocks; a mock only at a named boundary. |
 | Verify | Implementer | Run every verify command that exists by this task. Paste the command and the tail of its output. |
 | Challenge | Reviewer | One break attempt per named risk and per missed one. Each result is HELD or BROKE with file and line. |
-| Learn | Reviewer, then controller | Every Critical or Important finding becomes a lesson line in `lessons.md`. |
+| Record | Reviewer, then controller | Every Critical or Important finding becomes a row in the cross-run `.solomon-loop/lessons.md`. |
 
 The controller dispatches an implementer and keeps the production ledger. An independent reviewer, never chosen by the producer, owns exact-revision acceptance. Initial production permits at most TWO correction attempts TOTAL per task lineage, persisted across restarts, model/producer changes, reassignment and successor orders for the same failure. Two unsuccessful attempts escalate to the owner; the producer cannot override review or reset the count.
 
@@ -78,11 +78,11 @@ Point setup at a plan file:
 /solomon-loop:setup docs/plans/your-plan.md
 ```
 
-It writes three files under `.solomon-loop/<plan-slug>/`, or under `.superpowers/sdd/<plan-slug>/` when that workspace already exists:
+It writes two files under `.solomon-loop/<plan-slug>/`, or under `.superpowers/sdd/<plan-slug>/` when that workspace already exists, and finds or creates the cross-run lessons file:
 
 - `loop-lens.md`: Review Focus, security and privacy surfaces, verify commands with the task each exists from, and mock boundaries. Filled from the plan and its spec.
-- `lessons.md`: the empty candidate table.
 - `ledger.md`: the standing ruling that lets the reviewer write one throwaway test, plus any setup decision.
+- `.solomon-loop/lessons.md` (repo root, shared by every run): rows of date, run, lesson, evidence pointer and recurrence count.
 
 Then run it:
 
@@ -90,7 +90,7 @@ Then run it:
 /solomon-loop:run docs/plans/your-plan.md
 ```
 
-Per unchecked task: the implementer gets the task text, the acceptance checks, the relevant lens entries and the worker-report block. It commits and reports Sources, Risk, Mocks, Verification and TDD evidence before anything else. The reviewer gets the diff, that report and the challenge block, and returns findings by severity, every break attempt, a clean `git status --porcelain`, and lesson lines. Findings start fix rounds. The run copies candidate lessons and records rulings. Only exact-revision acceptance by the independent reviewer plus observed done evidence permits checking the task off. Acceptance grants no release, spending or disclosure authority.
+Per unchecked task: the implementer gets the task text, the acceptance checks, the relevant lens entries and the worker-report block. It commits and reports Sources, Risk, Mocks, Verification and TDD evidence before anything else. The reviewer gets the diff, that report and the challenge block, and returns findings by severity, every break attempt, a clean `git status --porcelain`, and lesson lines. Findings start fix rounds. The run appends lessons to the cross-run file and records rulings. Only exact-revision acceptance by the independent reviewer plus observed done evidence permits checking the task off. Acceptance grants no release, spending or disclosure authority.
 
 It stops for five things only:
 
@@ -108,19 +108,18 @@ After a run the workspace holds the whole record:
 .solomon-loop/<plan-slug>/
   loop-lens.md                  what every worker and reviewer read first
   ledger.md                     one line per ruling, in order
-  lessons.md                    candidate table with recurrence counts
   worker-report-task-N.md       one per task: Sources, Risk, Mocks, Verification
   reviewer-report-task-N.md     one per task: findings, break attempts, lessons
 ```
 
-Add `.solomon-loop/` to `.gitignore` unless you want the record tracked.
+The cross-run file `.solomon-loop/lessons.md` sits beside the plan folders and survives them. Add `.solomon-loop/` to `.gitignore` unless you want the record tracked.
 
 ### With superpowers
 
 When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work and SolomonLoop adds to it:
 
 - SDD's dispatcher and prompts run every dispatch; `/solomon-loop:run` defers to them instead of building its own briefs.
-- The workspace becomes `.superpowers/sdd/<plan>/`; the lens, lessons and rulings live in SDD's ledger.
+- The workspace becomes `.superpowers/sdd/<plan>/`; the lens and rulings live in SDD's ledger; the cross-run lessons file stays at `.solomon-loop/lessons.md`.
 - The worker-report block is appended to SDD's implementer prompt; the challenge block is appended after SDD's reviewer Part 2 and to the final whole-branch review.
 - Reviewer assignment stays independent; the independent reviewer owns acceptance. The TWO-TOTAL-attempt lineage counter supersedes conflicting SDD circuit breakers; existing user authority and critical-failure stops remain binding.
 
@@ -128,15 +127,14 @@ When `superpowers:subagent-driven-development` (SDD) is loaded, it runs the work
 
 [`examples/todo-api/`](examples/todo-api/) holds one unedited run on a small todo API. The reviewer's Challenge pass produced one BROKE. The files are what the run wrote, with nothing cleaned up afterwards.
 
-Read `reviewer-report-task-3.md` first, for the attempt table and the one BROKE. Then the worker report, for the Risk section written before the code. Then `lessons.md`, to see how the BROKE became a candidate.
+Read `reviewer-report-task-3.md` first, for the attempt table and the one BROKE. Then the worker report, for the Risk section written before the code. Then `lessons.md`, to see how the BROKE became a lesson row (that example ran under 1.0.0 with the older per-run table).
 
 ## How lessons get promoted
 
-1. **Candidate.** A reviewer finding becomes one row in `lessons.md`: task group, finding class, root cause, proposed improvement, recurrences 1.
-2. **Recurrence.** A later review reports the same class in a different task group; the row's count goes up. Recurrence inside one task group does not count.
-3. **Supported.** Two or more task groups and a concrete proposed change. One-offs and ties are rejected with the reason.
-4. **User approves.** At the end of the run you see each supported row with the exact edit and where it goes: the repo's brief file, the `loop-lens` defaults or the skill's templates. Declines are recorded.
-5. **Adopted.** The approved edit lands. A change to the skill's own files counts only after a skill check passes.
+1. **Append.** Each run appends its reviewers' lessons to `.solomon-loop/lessons.md`: date, run, lesson, evidence pointer, recurrence count 1.
+2. **Count.** Before appending, the run looks for a row with the same finding class. From a different run, the count goes up. Inside one run, it does not.
+3. **Review.** On your schedule you read the file. Rows with a count of 2 or more are the candidates. You decide what changes; reviewed rows move under a `## Reviewed` heading.
+4. **Adopt.** An approved edit lands. A change to the skill's own files counts only after a skill check passes.
 
 An agent never edits its own rules mid-run. Passing tests do not prove the process is improving; recurrence counts do.
 
