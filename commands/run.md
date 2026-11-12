@@ -1,5 +1,5 @@
 ---
-description: Run a plan with the Solomon Loop. One implementer then an independent reviewer per task, at most two total correction attempts per lineage, rulings in ledger.md, lessons promoted only when they recur.
+description: Run a plan with the Solomon Loop. One implementer then an independent reviewer per task, at most two total correction attempts per lineage, rulings in ledger.md, lessons appended to one cross-run file.
 argument-hint: <plan-path>
 allowed-tools: Read, Write, Edit, Agent, Bash(test *), Bash(git status *), Bash(git diff *), Bash(git log *), Bash(git rev-parse *)
 ---
@@ -10,11 +10,11 @@ Plan path: `$ARGUMENTS`
 
 ## 0. Preconditions
 
-1. Load the `solomon-loop` skill (invoke it with the Skill tool) and follow its loop: define, research, assess risk, implement, verify, challenge, learn, validate, promote.
+1. Load the `solomon-loop` skill (invoke it with the Skill tool) and follow its loop: define, research, assess risk, implement, verify, challenge, record lessons.
 2. If `$ARGUMENTS` is empty or not a file, stop with one line: `solomon-loop:run: plan not found at <path>`.
 3. Slug = plan filename without directory or `.md`. Workspace = `.superpowers/sdd/<slug>/` if it exists, else `.solomon-loop/<slug>/`. If the workspace has no `loop-lens.md`, run the steps of `/solomon-loop:setup $ARGUMENTS` first, then continue.
-4. Read `loop-lens.md`, `lessons.md` and `ledger.md` from the workspace. Read `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/worker-report.md` and `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/reviewer-challenge.md`.
-5. **With superpowers:** if `superpowers:subagent-driven-development` is loaded in this session, say so in one line and defer to it: SDD supplies prompt/report mechanics and its ledger; reviewer assignment stays independent and the independent reviewer owns acceptance, and the two-total-attempt lineage counter below supersedes any conflicting SDD circuit breaker. Your additions: before each implementer dispatch, record the task base and derive the tier (1a rules) and bind `[REPORT_PATH]` to `<workspace>/worker-report-task-<N>.md`; append the worker block to SDD's implementer prompt. Before each review, run the 1c candidate binding and diff tier re-check, bind `[REPORT_PATH]` to `<workspace>/reviewer-report-task-<N>.md`, and append the challenge block (Challenge dropped for light tier) after SDD's Part 2 of the reviewer prompt. Then the targeted report reads, lessons, rulings and the HEAD check before check-off from 1c and 1e. Skip the rest of sections 1 to 3 and follow SDD for ordering.
+4. Read `loop-lens.md` and `ledger.md` from the workspace. Resolve the main checkout root with `root="$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/lessons-root.sh")"` (stops with an error in a bare repo) and use `$root/.solomon-loop/lessons.md` (shared by all worktrees; print its absolute path); if it is missing, create it from `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/lessons.template.md`. Read `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/worker-report.md` and `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/reviewer-challenge.md`.
+5. **With superpowers:** if `superpowers:subagent-driven-development` is loaded in this session, say so in one line and defer to it: SDD supplies prompt/report mechanics and its ledger; reviewer assignment stays independent and the independent reviewer owns acceptance, and the two-total-attempt lineage counter below supersedes any conflicting SDD circuit breaker. Your additions: before each implementer dispatch, record the task base and derive the tier (1a rules) and bind `[REPORT_PATH]` to `<workspace>/worker-report-task-<N>.md`; append the worker block to SDD's implementer prompt. Before each review, run the 1c candidate binding and diff tier re-check, bind `[REPORT_PATH]` to `<workspace>/reviewer-report-task-<N>.md`, and append the challenge block (Challenge dropped for light tier) after SDD's Part 2 of the reviewer prompt. Then the targeted report reads, lessons append, rulings and the HEAD check before check-off from 1c and 1e. Skip the rest of sections 1 to 3 and follow SDD for ordering.
 
 ## 1. For each unchecked task, in plan order
 
@@ -42,11 +42,11 @@ First bind the candidate: run `git rev-parse HEAD` yourself and require it to eq
 
 ### 1d. Fix rounds
 
-A real Critical or Important finding starts a correction attempt. Minors, including compliance gaps the reviewer did not tie to a defect, never start one; fold them into a round that real findings already started, else list them in the final report. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. An independent reviewer handles the scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate to the owner. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
+A real Critical or Important finding starts a correction attempt. Minors, including compliance gaps the reviewer did not tie to a defect, never start one; fold them into a round that real findings already started, else list them in the final report. Initial production is separate. At most TWO correction attempts TOTAL per work-order lineage; persist `correction_count` in ledger/reports across restart/model/producer changes, reassignment and successor orders addressing the same failure. Increment before each correction dispatch. An independent reviewer handles the scoped re-review of the exact new revision. After two unsuccessful attempts, preserve findings and escalate to the owner. Do not check off failed work, adjudicate it into acceptance, reset the count or create another order to bypass exhaustion. This cap overrides any larger round or retry limit in an underlying skill, including the five fix rounds in `superpowers:subagent-driven-development`. Final whole-branch review uses affected lineages' remaining counters, never an extra allowance.
 
-### 1e. Learn and record
+### 1e. Record
 
-- Copy every Lessons line from the reviewer into `lessons.md` as a new row: `#`, task group (the task number or the plan's grouping), finding class, root cause, proposed improvement, `Recurrences` 1, `Status` candidate. If the same finding class already has a row, bump its `Recurrences` and add the task group instead of adding a row.
+- Append every Lessons line from the reviewer to `$root/.solomon-loop/lessons.md` as a row `| Date | Run | Lesson | Evidence | Recurrences |`: today's date, the plan slug, finding class plus proposed improvement, the evidence, and `1`. SDD deletes its workspace at finish, so Evidence never points at a workspace report: copy the reviewer's finding (`file:line` plus a one-line quote or summary) into the cell, or write it to `<lessons dir>/evidence/<run>-task-<N>.md` beside the lessons file and point Evidence there. If a row with the same finding class exists from a different run, add 1 to its `Recurrences`, update `Date`, and append the run and the pointer. If it exists from this run, append the pointer only. Never count a recurrence inside one run.
 - Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
 - Only after exact-revision acceptance by the independent reviewer and actual done evidence, and only when `git rev-parse HEAD` still equals the reviewed SHA (any new commit returns the task to 1c), ledger `Ruling (YYYY-MM-DD, Task N): accepted <sha> | reviewer verdict accept | unreviewed code if HEAD moved` and check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
 - Make the lessons, ledger and plan edits as parallel tool calls in ONE message per task, not one message per file.
@@ -68,12 +68,9 @@ Check existing work-order authority before the following actions; obtain only mi
 4. A hopeless plan (a task that cannot pass its own done check, or two correction attempts failing).
 5. Adopting any process change (editing the skill, templates, brief rules or `loop-lens.md` mid-run).
 
-## 3. Promote (end of run)
+## 3. End of run
 
-1. Supported = a finding class that recurred in 2 or more task groups and has a concrete proposed improvement. For each, show the user: finding class, task groups, the exact proposed edit, and where it goes (the repo's brief file, `loop-lens.md` defaults, or the skill's templates). Set `Status` to `supported` and wait for a yes or no per item.
-2. Every other candidate: set `Status` to `rejected` with the reason (`one occurrence` or `no concrete change`). Candidates the user declines become `declined`.
-3. Apply only what the user approves. An approved change to the skill's own files is `adopted` only after a skill check passes (frontmatter, length, trigger test).
-4. Final report: tasks done, tasks waiting on the user, tier and rounds used per task, findings by severity, unfixed Minors, supported candidates, and the paths of `lessons.md` and `ledger.md`.
+No promotion step. Rows with `Recurrences` of 2 or more in `$root/.solomon-loop/lessons.md` are for the owner's scheduled review. Final report: tasks done, tasks waiting on the user, tier and rounds used per task, findings by severity, unfixed Minors, lessons appended or bumped, and the absolute paths of `$root/.solomon-loop/lessons.md` and `ledger.md`.
 
 ## Authority
 

@@ -1,6 +1,6 @@
 # AGENTS.md: solomon-loop
 
-Claude Code plugin: risk-before-code, attacking reviewer, verified commands, promote lessons only when they recur.
+Claude Code plugin: risk-before-code, attacking reviewer, verified commands, log lessons across runs.
 
 ## Folder map
 
@@ -28,7 +28,7 @@ Claude Code plugin: risk-before-code, attacking reviewer, verified commands, pro
 
 ## ICM / Graphify
 
-When `graphify-out/graph.json` exists, answer codebase questions with `graphify query "<q>"` (also `path` / `explain`) before grep or explore agents. Rebuild with `graphify update` after large structural changes. Dual Develop: Hermes-first product build; Cursor for git/PR/evals/parallel. No secrets in commits or docs. Ops spine: `~/Projects/personal-tech-ops`.
+When `graphify-out/graph.json` exists, answer codebase questions with `graphify query "<q>"` (also `path` / `explain`) before grep or explore agents. Rebuild with `graphify update` after large structural changes. No secrets in commits or docs.
 
 ## Hard rules
 

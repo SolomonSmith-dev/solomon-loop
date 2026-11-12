@@ -96,9 +96,9 @@ Fails when: file missing or empty
 ### Task 12: Dogfood locally
 Owner: Claude
 Files: ~/dotfiles/skills/solomon-loop (becomes symlink), dotfiles commit
-Steps: install the plugin from GitHub in Solomon's real HOME; replace the dotfiles folder with a symlink into the installed plugin's skills/solomon-loop; `hermes skills list` still shows solomon-loop.
-Done check: `readlink ~/dotfiles/skills/solomon-loop && hermes skills list | grep solomon-loop`
-Fails when: readlink prints nothing, or hermes does not list it. Runs last; coordinated with the dotfiles session if it is active.
+Steps: install the plugin from GitHub in Solomon's real HOME; replace the dotfiles folder with a symlink into the installed plugin's skills/solomon-loop.
+Done check: `readlink ~/dotfiles/skills/solomon-loop`
+Fails when: readlink prints nothing. Runs last; coordinated with the dotfiles session if it is active.
 
 ### Task 13: Record draft and HQ report
 Owner: Claude

@@ -6,7 +6,7 @@ Unedited output of a single run of the loop on a throwaway Node 22 repo (zero de
 
 1. **The BROKE line.** `reviewer-report-task-3.md`, Part 3, attempt 5: `PATCH /items/%E0` returned 500 because `decodeURIComponent` throws on bad percent-encoding (`src/server.js:81` at the time). Spec requires 404. The implementer's own probes never tried a malformed path segment. The fix round (same file, second half) shows the test-first fix and the scoped re-review that confirmed it with eight more attempts.
 2. **Risk written before code.** `risk-task-3-draft.md` was written before any src or test edit (mtimes checked by the reviewer). Task 3's brief omitted the ownership check from its acceptance list; the Risk step made the implementer add it anyway, which is the loop working as designed. Compare `plan.md` Task 3 steps with the `updateItem(owner, id, patch)` signature in `src/store.js`.
-3. **The lessons table.** `lessons.md` has one candidate, `built-in-throws-on-path-input`, with a concrete proposed edit. It recurred in one task group, so the promote rule rejected it. One occurrence is a candidate, not evidence.
+3. **The lessons table.** `lessons.md` has one candidate, `built-in-throws-on-path-input`, with a concrete proposed edit. It recurred in one task group, so the old per-run promote rule rejected it. One occurrence is a candidate, not evidence. Since 1.0.4 such rows go to the cross-run `.solomon-loop/lessons.md`.
 
 ## What is here
 

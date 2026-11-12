@@ -1,5 +1,5 @@
 ---
-description: Prepare a Solomon Loop workspace for a plan. Writes loop-lens.md, lessons.md and ledger.md next to the plan's SDD workspace or under .solomon-loop/<slug>/.
+description: Prepare a Solomon Loop workspace for a plan. Writes loop-lens.md and ledger.md next to the plan's SDD workspace or under .solomon-loop/<slug>/, and finds or creates the cross-run lessons file .solomon-loop/lessons.md.
 argument-hint: <plan-path>
 allowed-tools: Read, Write, Edit, Bash(test *), Bash(mkdir *), Bash(/bin/ls *), Bash(basename *), Bash(git status *)
 ---
@@ -21,7 +21,7 @@ Otherwise read the plan in full. If the plan names a spec (a `Spec:` line or a l
 - If `.superpowers/sdd/<slug>/` exists in the repo root, that directory is the workspace (superpowers subagent-driven-development owns the plan; this command only adds files there).
 - Otherwise create `.solomon-loop/<slug>/` in the repo root and use it.
 
-Never write into any other directory. Do not touch tracked files.
+Never write into any other directory, except `$root/.solomon-loop/lessons.md` and its `evidence/` directory, where `$root` is the main checkout root (see section 4). Do not touch tracked files.
 
 ## 3. Write `<workspace>/loop-lens.md`
 
@@ -34,9 +34,9 @@ Read the template at `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/loop-lens.templa
 
 Keep each list short. A line nobody can act on is a line to delete.
 
-## 4. Write `<workspace>/lessons.md`
+## 4. Find or create the cross-run lessons file
 
-Copy `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/lessons.template.md` as-is, minus its trailing HTML comment. If the file already exists, leave it alone and say so.
+Resolve the main checkout root so every worktree shares one file: `root="$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/lessons-root.sh")"` (stops with an error in a bare repo). The file is `$root/.solomon-loop/lessons.md` (name unchanged), one per repo, shared by every run and worktree and outside any per-plan workspace. If it exists, leave it alone and say so. Otherwise create it: copy `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/lessons.template.md` as-is, minus its trailing HTML comment.
 
 ## 5. Write `<workspace>/ledger.md`
 
@@ -54,4 +54,4 @@ Before dispatch record the work-order lineage and persisted correction_count, pr
 
 ## 7. Report
 
-Print the three absolute paths, one per line, then one line saying which workspace rule applied (`SDD workspace found` or `created .solomon-loop/<slug>/`). Nothing else. Do not start running tasks; that is `/solomon-loop:run <plan-path>`.
+Print the three absolute paths (`loop-lens.md`, `ledger.md`, `$root/.solomon-loop/lessons.md` as an absolute path), one per line, then one line saying which workspace rule applied (`SDD workspace found` or `created .solomon-loop/<slug>/`). Nothing else. Do not start running tasks; that is `/solomon-loop:run <plan-path>`.
