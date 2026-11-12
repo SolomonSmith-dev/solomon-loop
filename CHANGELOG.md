@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The shared lessons file now resolves the main checkout through `scripts/lessons-root.sh` (first `git worktree list` entry) instead of the git-common-dir parent, which was wrong for `git init --separate-git-dir`. Bare repositories stop with an error.
+
 ## [1.0.4] - 2026-11-10
 
 ### Changed

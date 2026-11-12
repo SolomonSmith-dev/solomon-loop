@@ -36,7 +36,7 @@ Keep each list short. A line nobody can act on is a line to delete.
 
 ## 4. Find or create the cross-run lessons file
 
-Resolve the main checkout root so every worktree shares one file: `root="$(cd "$(git rev-parse --git-common-dir)/.." && pwd)"`. The file is `$root/.solomon-loop/lessons.md` (name unchanged), one per repo, shared by every run and worktree and outside any per-plan workspace. If it exists, leave it alone and say so. Otherwise create it: copy `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/lessons.template.md` as-is, minus its trailing HTML comment.
+Resolve the main checkout root so every worktree shares one file: `root="$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/lessons-root.sh")"` (stops with an error in a bare repo). The file is `$root/.solomon-loop/lessons.md` (name unchanged), one per repo, shared by every run and worktree and outside any per-plan workspace. If it exists, leave it alone and say so. Otherwise create it: copy `${CLAUDE_PLUGIN_ROOT}/skills/solomon-loop/lessons.template.md` as-is, minus its trailing HTML comment.
 
 ## 5. Write `<workspace>/ledger.md`
 
