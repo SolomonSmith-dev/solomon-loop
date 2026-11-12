@@ -34,3 +34,11 @@ jobs:
         with:
           args: --no-progress README.md
           fail: true
+
+  base-pin:
+    name: Base pin rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check base-pin rules
+        run: bash scripts/check-base-pin.sh

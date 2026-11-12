@@ -1,7 +1,7 @@
 ---
 description: Run a plan with the Solomon Loop. One implementer then an independent reviewer per task, at most two total correction attempts per lineage, rulings in ledger.md, lessons promoted only when they recur.
 argument-hint: <plan-path>
-allowed-tools: Read, Write, Edit, Agent, Bash(test *), Bash(git status *), Bash(git diff *), Bash(git log *), Bash(git rev-parse *)
+allowed-tools: Read, Write, Edit, Agent, Bash(test *), Bash(git status *), Bash(git diff *), Bash(git log *), Bash(git rev-parse *), Bash(git merge-base *)
 ---
 
 # Solomon Loop run
@@ -29,7 +29,7 @@ The brief contains, in this order:
 - The relevant Review Focus items, surfaces, verify commands that exist by this task number, and mock boundaries, copied from `loop-lens.md`.
 - Repo rules the plan states for every brief (shell aliases to avoid, commit conventions, forbidden trailers).
 - The worker-report block from `worker-report.md`, appended last, with `[REVIEW_FOCUS]`, `[SECURITY_SURFACES]`, `[MOCK_BOUNDARIES]` and `[VERIFY_COMMANDS]` filled from `loop-lens.md`, and `[REPORT_PATH]` = `<workspace>/worker-report-task-<N>.md`.
-- Task base: before the first implementer dispatch for this task, run `git rev-parse HEAD` and ledger `Ruling (YYYY-MM-DD, Task N): base <sha> | task start | review misses earlier task commits`. On a resumed run, reuse the ledgered base; never re-derive it from the candidate's parent. Correction attempts keep the same base.
+- Task base: before the first implementer dispatch for this task, run `git rev-parse HEAD` and ledger `Ruling (YYYY-MM-DD, Task N): base <sha> | task start | review misses earlier task commits`. During a live run the base stays in the controller's context; the ledger copy is read only on resume, and must then pass the range check in 1c before it is reused. Never re-derive it from the candidate's parent. Correction attempts keep the same base. The implementer may write only its own `worker-report-task-<N>.md`, never `ledger.md`, `lessons.md` or `loop-lens.md`; say so in the brief.
 - Review tier: **light** only when every path in the task's Files list is on the light allowlist: docs (`*.md`, `*.mdx`, `*.rst`, `*.txt`, outside instruction paths), tests (`test/**`, `tests/**`, `**/__tests__/**`, `*.test.*`, `*.spec.*`, `*_test.*`, `test_*.py`) and fixtures (`**/fixtures/**`, `**/testdata/**`). Any other path, or `Review tier: full` in the plan, makes it **full**. **Instruction paths are never docs:** `SKILL.md`, `AGENTS.md`, `CLAUDE.md` and `GEMINI.md` anywhere, and any file under `.claude/`, `.claude-plugin/`, `.codex/`, `.github/`, `skills/`, `commands/`, `agents/`, `prompts/` or `hooks/`; a task touching one is always **full**. A plan line asking for `light` is ignored and ledgered. Ledger the tier: `Ruling (YYYY-MM-DD, Task N): tier <full|light> | first non-allowlisted path or all allowlisted | a light task hides a source bug`.
 
 ### 1b. Implement: dispatch the implementer
@@ -38,7 +38,7 @@ Dispatch one `Agent` (general-purpose) with the brief. The implementer writes th
 
 ### 1c. Challenge: dispatch an independent reviewer
 
-First bind the candidate: run `git rev-parse HEAD` yourself and require it to equal the summary's `COMMIT`; on mismatch, do not review, ledger it and treat it as a Critical finding against the implementer. Then re-check the tier against the actual diff, `git diff --name-only <base>..<candidate>` with `<base>` = the ledgered task base: any path off the light allowlist from 1a raises a light task to full (ledger it); nothing ever lowers a tier. Then dispatch a second, independent reviewer `Agent` (never the implementer, never one the implementer chose) with: the task text and acceptance checks, the task base, the candidate SHA and the commit range `<base>..<candidate>` (the reviewer runs `git diff` itself and reports the SHA it reviewed), the implementer's report path, the tier, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled (only the Part 3 Challenge section dropped for light tier; review authority, report compliance, lessons and writes stay). The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new outside the workspace, and ends with Lessons lines or `Lessons: none`. It writes the report to `<workspace>/reviewer-report-task-<N>.md` and returns only the 10-line summary. Targeted reads only: for every task, read the report's Part 4 Lessons section and its list of unfixed Minors (needed for 1e and the final report); when the summary says `corrections-needed`, also read its Critical and Important findings to brief the correction. Never read the rest.
+First bind the candidate: run `git rev-parse HEAD` yourself and require it to equal the summary's `COMMIT`; on mismatch, do not review, ledger it and treat it as a Critical finding against the implementer. Then pin the range: `git merge-base --is-ancestor <base> <candidate>` must succeed and `git diff --name-only <base>..<candidate>` must be non-empty. An empty or non-ancestor range is a Critical finding: do not review, do not accept, ledger it and escalate to the owner. Then re-check the tier against the actual diff, `git diff --name-only <base>..<candidate>` with `<base>` = the ledgered task base: any path off the light allowlist from 1a raises a light task to full (ledger it); nothing ever lowers a tier. Then dispatch a second, independent reviewer `Agent` (never the implementer, never one the implementer chose) with: the task text and acceptance checks, the task base, the candidate SHA and the commit range `<base>..<candidate>` (the reviewer runs `git diff` itself and reports the SHA it reviewed), the implementer's report path, the tier, and the reviewer-challenge block from `reviewer-challenge.md` with its placeholders filled (only the Part 3 Challenge section dropped for light tier; review authority, report compliance, lessons and writes stay). The reviewer rates each finding Critical, Important or Minor, reports each break attempt as `target | attack | result (HELD or BROKE file:line)`, states that `git status --porcelain` shows nothing new outside the workspace, and ends with Lessons lines or `Lessons: none`. It writes the report to `<workspace>/reviewer-report-task-<N>.md` and returns only the 10-line summary. Targeted reads only: for every task, read the report's Part 4 Lessons section and its list of unfixed Minors (needed for 1e and the final report); when the summary says `corrections-needed`, also read its Critical and Important findings to brief the correction. Never read the rest.
 
 ### 1d. Fix rounds
 
@@ -48,7 +48,7 @@ A real Critical or Important finding starts a correction attempt. Minors, includ
 
 - Copy every Lessons line from the reviewer into `lessons.md` as a new row: `#`, task group (the task number or the plan's grouping), finding class, root cause, proposed improvement, `Recurrences` 1, `Status` candidate. If the same finding class already has a row, bump its `Recurrences` and add the task group instead of adding a row.
 - Record every decision you made in `ledger.md` as `Ruling (YYYY-MM-DD, Task N): <what> | <why> | <cost if wrong>`: derived checks, scope cuts, an extra verify command, an unblocking fix, which round fixed a finding.
-- Only after exact-revision acceptance by the independent reviewer and actual done evidence, and only when `git rev-parse HEAD` still equals the reviewed SHA (any new commit returns the task to 1c), ledger `Ruling (YYYY-MM-DD, Task N): accepted <sha> | reviewer verdict accept | unreviewed code if HEAD moved` and check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
+- Only after exact-revision acceptance by the independent reviewer and actual done evidence, and only when `git rev-parse HEAD` still equals the reviewed SHA (any new commit returns the task to 1c) and the 1c range check (`git merge-base --is-ancestor <base> <candidate>` succeeds, `git diff --name-only <base>..<candidate>` non-empty) passes again; an empty or non-ancestor range is Critical, escalate to the owner, ledger `Ruling (YYYY-MM-DD, Task N): accepted <sha> | reviewer verdict accept | unreviewed code if HEAD moved` and check the task off in the plan: `- [ ]` becomes `- [x]`, or add `[x]` to the task heading. Edit only that line.
 - Make the lessons, ledger and plan edits as parallel tool calls in ONE message per task, not one message per file.
 
 ### 1f. Controller context
@@ -57,6 +57,10 @@ The controller's own context is the largest cost in a run (measured 2026-11-04: 
 
 - Never paste a report, diff or full test output into the controller's context; work from the 10-line summaries and file paths.
 - After every 5 accepted tasks, if unchecked tasks remain, end with one line: `solomon-loop:run: 5 tasks accepted, context reset due. Resume: /solomon-loop:run $ARGUMENTS`. The ledger, lessons and plan checkboxes hold all state, so a fresh session resumes from the next unchecked task. This is not a "continue?" question.
+
+### 1g. Residual
+
+An implementer with shell access can still tamper with the workspace or git history; these rules detect it, they do not prevent it. Only sandboxing the implementer closes that (issue #2).
 
 ## 2. Stops
 

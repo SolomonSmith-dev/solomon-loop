@@ -14,6 +14,8 @@ Check report compliance. Each gap is **Minor** by default:
 - **Sources** missing for a new library or external API call.
 - A mock outside these boundaries: [MOCK_BOUNDARIES].
 - **Verification** lacks any of: [VERIFY_COMMANDS].
+- **Workspace writes:** the implementer may write only its own `worker-report-task-<N>.md`. Any change to `ledger.md`, `lessons.md` or `loop-lens.md` by the implementer is **Critical**, not Minor.
+- **Range:** `git merge-base --is-ancestor <base> <candidate>` fails or `git diff --name-only <base>..<candidate>` is empty: **Critical**, no accept.
 
 A compliance gap becomes **Important** only when you show the defect it hides: a BROKE result (full tier), a failing or missing check you ran, or file:line behavior that contradicts the spec or current docs. Name that defect in the finding. "The section is missing" alone is never Important. A Minor never starts a correction attempt; it rides along with one that real findings already started.
 
