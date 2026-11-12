@@ -37,9 +37,9 @@ After the last task: an independent reviewer runs the whole-branch Challenge sco
 
 ## Cross-run lessons
 
-File: `.solomon-loop/lessons.md` at the repo root. Row: `| Date | Run | Lesson | Evidence | Recurrences |`.
+File: `$root/.solomon-loop/lessons.md`, with `root="$(cd "$(git rev-parse --git-common-dir)/.." && pwd)"` so all worktrees share the main checkout's file; print the absolute path. Row: `| Date | Run | Lesson | Evidence | Recurrences |`.
 
-- **Date:** last time the lesson was seen. **Run:** the plan slug. **Lesson:** finding class and the proposed improvement. **Evidence:** path to the reviewer report, with `file:line`.
+- **Date:** last time the lesson was seen. **Run:** the plan slug. **Lesson:** finding class and the proposed improvement. **Evidence:** the reviewer's finding copied in (`file:line` plus a one-line quote or summary), or a pointer to `<lessons dir>/evidence/<run>-task-<N>.md` beside the lessons file. Never a workspace report path: SDD deletes its workspace at finish.
 - **Append rule:** before adding a row, look for one with the same finding class. Found, from a different run: add 1 to `Recurrences`, update `Date`, append the run to `Run` and the pointer to `Evidence`. Found, same run: append the pointer only. Not found: add a row with `Recurrences` 1.
 - **Promotion is a scheduled review, not a stage.** On the owner's schedule, the owner reads the file. Rows with `Recurrences` of 2 or more are the candidates. The owner decides what changes; reviewed rows move under a `## Reviewed` heading with the outcome. An approved change to this skill's files counts only after a skill check passes.
 - **Standing process, role and authority changes require user approval**, including changes proposed to unblock a broken task. A ledger Ruling cannot waive that requirement. Ordinary implementation fixes within the already approved task remain allowed; they do not authorize process adoption. Already approved policy changes require integration and verification, not repeated approval.
@@ -53,7 +53,7 @@ Not run inside a delivery run. When the user asks: freeze the current templates 
 SDD runs the dispatch; this skill adds to it.
 
 - Reviewer assignment stays independent and the independent reviewer owns acceptance. The original attempt plus at most TWO corrections per lineage, then escalation to the owner, overrides SDD's five fix rounds.
-- SDD's workspace `.superpowers/sdd/<plan>/` holds `loop-lens.md`, the reports and the Rulings. The cross-run lessons file stays at `.solomon-loop/lessons.md`.
+- SDD's workspace `.superpowers/sdd/<plan>/` holds `loop-lens.md`, the reports and the Rulings. The cross-run lessons file stays at `$root/.solomon-loop/lessons.md` (main checkout root, `root="$(cd "$(git rev-parse --git-common-dir)/.." && pwd)"`).
 - Append [worker-report.md](worker-report.md) to SDD's implementer prompt and [reviewer-challenge.md](reviewer-challenge.md) after SDD's Part 2 in the task reviewer and re-reviewer prompts. The final whole-branch review gets the Challenge section only.
 - Before each dispatch derive the tier and bind `[REPORT_PATH]`; before each review and before check-off confirm `git rev-parse HEAD` equals the reviewed SHA.
 - Never edit the plugin cache.
