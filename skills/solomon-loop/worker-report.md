@@ -5,7 +5,7 @@ Append this block to the implementer's brief (standalone) or to SDD's implemente
 ```
 ## Solomon Loop (binding for this task)
 
-Record work-order ID/lineage, exact candidate revision and persisted correction_count (initial production is not a correction). At most TWO correction attempts TOTAL across restart/model/producer/reassignment/successor changes. An independent reviewer owns acceptance; self-review is evidence only. Escalate unresolved failure to the owner after two unsuccessful attempts. Never treat review as execution/release authority.
+Record work-order ID/lineage, exact candidate revision and persisted correction_count (initial production is not a correction). At most TWO correction attempts TOTAL across restart/model/producer/reassignment/successor changes. An independent reviewer owns acceptance; self-review is evidence only. Escalate unresolved failure to the owner after two unsuccessful attempts. Never treat review as execution/release authority. You may write only your own report file at [REPORT_PATH], never `ledger.md`, `lessons.md` or `loop-lens.md`.
 
 Your report file must contain these sections, in this order, before the standard ones:
 

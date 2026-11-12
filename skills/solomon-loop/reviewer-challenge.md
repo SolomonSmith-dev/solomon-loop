@@ -1,6 +1,6 @@
 # Reviewer additions (Solomon Loop)
 
-Append this block to the reviewer's brief (standalone) or to SDD's task-reviewer prompt after Part 2 (with superpowers), and to the re-review prompt for the fix it covers. Standalone, Parts 1 and 2 are spec compliance and code quality; Part 3 starts here. Fill `[PLACEHOLDER]` values from the workspace `loop-lens.md`. For a **light**-tier task, drop only the "Part 3: Challenge (full tier only)" section; every other section is sent on every tier.
+Append this block to the reviewer's brief (standalone) or to SDD's task-reviewer prompt after Part 2 (with superpowers), and to the re-review prompt for the fix it covers. Standalone, Parts 1 and 2 are spec compliance and code quality; Part 3 starts here. Fill `[PLACEHOLDER]` values from the workspace `loop-lens.md`. The block must keep these checks in force: the write rule for `worker-report-task-<N>.md`, the range check with `git merge-base --is-ancestor`, and the workspace hash comparison with `shasum -a 256` using the `[WORKSPACE_HASHES]` placeholder. For a **light**-tier task, drop only the "Part 3: Challenge (full tier only)" section; every other section is sent on every tier.
 
 ```
 ## Review authority (every tier)
@@ -14,6 +14,9 @@ Check report compliance. Each gap is **Minor** by default:
 - **Sources** missing for a new library or external API call.
 - A mock outside these boundaries: [MOCK_BOUNDARIES].
 - **Verification** lacks any of: [VERIFY_COMMANDS].
+- **Workspace writes:** the implementer may write only its own `worker-report-task-<N>.md`. Any change to `ledger.md`, `lessons.md` or `loop-lens.md` by the implementer is **Critical**, not Minor; the hash comparison below is how you check it.
+- **Range:** `git merge-base --is-ancestor <base> <candidate>` fails or `git diff --name-only <base>..<candidate>` is empty: **Critical**, no accept.
+- **Workspace hashes:** the controller gives you the pre-dispatch `shasum -a 256` of `ledger.md`, `lessons.md` and `loop-lens.md`: [WORKSPACE_HASHES]. Re-run `shasum -a 256 ledger.md lessons.md loop-lens.md` in the workspace yourself. Any mismatch is **Critical**, no accept, and you name the file.
 
 A compliance gap becomes **Important** only when you show the defect it hides: a BROKE result (full tier), a failing or missing check you ran, or file:line behavior that contradicts the spec or current docs. Name that defect in the finding. "The section is missing" alone is never Important. A Minor never starts a correction attempt; it rides along with one that real findings already started.
 

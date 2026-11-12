@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- Pin the task base on resumed runs (#2): before review and before check-off, `git merge-base --is-ancestor <base> <candidate>` must succeed and `git diff --name-only <base>..<candidate>` must be non-empty, else Critical and escalate to the owner. The base stays in the controller's context during a live run; the ledger copy is read only on resume. Implementers may write only their own `worker-report-task-<N>.md`, never `ledger.md`, `lessons.md` or `loop-lens.md`; reviewers check this. Residual: a shell-capable implementer can still tamper; only sandboxing closes it.
+- `scripts/check-base-pin.sh` and a `base-pin` CI job guard these rules.
+
 ## [1.0.3] - 2026-11-04
 
 ### Added
