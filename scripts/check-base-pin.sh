@@ -17,7 +17,10 @@ strip() {
 }
 
 need() { # file, fixed-string pattern, label  (matches stripped text)
-  if ! strip "$1" | grep -qF -- "$2"; then
+  # Capture first: grep -q closing the pipe early SIGPIPEs perl/awk and pipefail then reports a present rule as missing.
+  local text
+  text="$(strip "$1")"
+  if ! grep -qF -- "$2" <<<"$text"; then
     echo "FAIL: $1 missing: $3" >&2
     fail=1
   fi
