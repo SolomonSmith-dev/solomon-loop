@@ -41,6 +41,14 @@ jobs:
       - name: Test lessons-root.sh
         run: bash scripts/test-lessons-root.sh
 
+  pins:
+    name: Workflow pins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Test workflow pins
+        run: bash scripts/test-workflow-pins.sh
+
   links:
     name: README links
     runs-on: ubuntu-latest

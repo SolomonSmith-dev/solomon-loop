@@ -16,13 +16,22 @@ if [[ -n "$unpinned" ]]; then
   exit 1
 fi
 
-if grep -Eq 'npm install -g @anthropic-ai/claude-code[[:space:]]*$' "$wf"; then
-  echo "claude-code install is unpinned"
+# Every claude-code npm install must be semver-pinned. One good pin must not
+# hide a second @latest / untagged install.
+bad_cc="$(grep -E 'npm install -g @anthropic-ai/claude-code' "$wf" | grep -vE '@anthropic-ai/claude-code@[0-9]+\.[0-9]+\.[0-9]+([[:space:]]|$)' || true)"
+if [[ -n "$bad_cc" ]]; then
+  echo "unpinned claude-code install:"
+  printf '%s\n' "$bad_cc"
   exit 1
 fi
 
 if ! grep -Eq 'npm install -g @anthropic-ai/claude-code@[0-9]+\.[0-9]+\.[0-9]+' "$wf"; then
   echo "claude-code install is missing a semver pin"
+  exit 1
+fi
+
+if ! grep -Eq 'scripts/test-workflow-pins\.sh' "$wf"; then
+  echo "validate.yml does not invoke test-workflow-pins.sh"
   exit 1
 fi
 
