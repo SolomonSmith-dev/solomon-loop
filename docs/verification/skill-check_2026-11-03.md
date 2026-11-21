@@ -1,6 +1,6 @@
 # Skill check: solomon-loop:solomon-loop (plugin, 1.0.0)
 
-Procedure: `~/.claude/skills/skill-check/SKILL.md`, six checks in order. Run 2026-11-03 against `/Users/solomonsmith/Projects/solomon-loop` via `--plugin-dir` (plugin not installed in the real HOME). Scratch: `/private/tmp/claude-501/-Users-solomonsmith-Projects/a26623a7-cbfe-4aa0-8829-d9e5a0965cd3/scratchpad/skillcheck/`.
+Procedure: `~/.claude/skills/skill-check/SKILL.md`, six checks in order. Run 2026-11-03 against `~/Projects/solomon-loop` via `--plugin-dir` (plugin not installed in the real HOME). Scratch: `/private/tmp/claude-501/-Users-solomonsmith-Projects/a26623a7-cbfe-4aa0-8829-d9e5a0965cd3/scratchpad/skillcheck/`.
 
 ## Verdict: pass with notes
 
@@ -36,7 +36,7 @@ exit=0
 
 ## 3. Load
 
-`claude -p "Is a skill named solomon-loop available in this session? ..." --plugin-dir /Users/solomonsmith/Projects/solomon-loop --max-turns 3` answered:
+`claude -p "Is a skill named solomon-loop available in this session? ..." --plugin-dir ~/Projects/solomon-loop --max-turns 3` answered:
 
 > Yes, it's available. **solomon-loop**: "Use whenever a plan is executed with subagents (subagent-driven development, one subagent per task with reviews), loaded together with superpowers:subagent-driven-development, and when Solomon says "run this with my loop", "use the Solomon Loop" or "loop this"."
 

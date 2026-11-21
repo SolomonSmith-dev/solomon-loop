@@ -3,7 +3,7 @@
 Clean HOME (empty temp dir), empty project with `docs/plans/sample.md`.
 
 ```
-$ claude plugin marketplace add /Users/solomonsmith/Projects/solomon-loop
+$ claude plugin marketplace add ~/Projects/solomon-loop
 ✔ Successfully added marketplace: solomon-loop (declared in user settings)
 $ claude plugin install solomon-loop@solomon-loop --scope user
 ✔ Successfully installed plugin: solomon-loop@solomon-loop (scope: user)
@@ -17,7 +17,7 @@ $ claude plugin list
 Headless command run (clean HOME has no login, so this step ran with the real HOME and `--plugin-dir`):
 
 ```
-$ claude -p "/solomon-loop:setup docs/plans/sample.md" --plugin-dir /Users/solomonsmith/Projects/solomon-loop --permission-mode acceptEdits
+$ claude -p "/solomon-loop:setup docs/plans/sample.md" --plugin-dir ~/Projects/solomon-loop --permission-mode acceptEdits
 .solomon-loop/sample/loop-lens.md
 .solomon-loop/sample/lessons.md
 .solomon-loop/sample/ledger.md
