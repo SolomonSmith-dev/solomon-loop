@@ -61,7 +61,7 @@ Fails when: the first grep prints any line, or the second count is 0
 Owner: Claude (subagent)
 Files: docs/verification/install-proof_2026-11-03.md
 Steps:
-1. In an empty dir with HOME set to a temp dir: `claude plugin marketplace add /Users/solomonsmith/Projects/solomon-loop` then `claude plugin install solomon-loop@solomon-loop`, then `claude plugin list`.
+1. In an empty dir with HOME set to a temp dir: `claude plugin marketplace add ~/Projects/solomon-loop` then `claude plugin install solomon-loop@solomon-loop`, then `claude plugin list`.
 2. Run `claude -p "/solomon-loop:setup docs/plans/sample.md"` on a sample plan copied in; check the loop-lens file.
 3. After the GitHub push (Task 9) repeat with `SolomonSmith-dev/solomon-loop` as the source. Paste outputs into the proof file.
 Done check: `grep -c "solomon-loop" docs/verification/install-proof_2026-11-03.md && test -f <tmp>/.solomon-loop/sample/loop-lens.md`
